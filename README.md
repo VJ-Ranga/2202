@@ -2,6 +2,12 @@
 
 Client-review HTML storefront for the planned migration from WordPress/WooCommerce to Shopify.
 
+## Public preview
+
+[Open the client presentation](https://vj-ranga.github.io/2202/)
+
+GitHub Pages publishes the contents of `shopify-theme/html-demo/`. Changes to that folder on `main` deploy automatically through [the Pages workflow](.github/workflows/pages.yml). Only the runnable storefront is deployed; project documentation, source exports, and local WordPress backups are not part of the published site.
+
 ## Run the preview
 
 From the repository root:

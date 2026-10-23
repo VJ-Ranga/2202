@@ -1,5 +1,6 @@
 # Keep this repository limited to the storefront project and its documentation.
 /*
 !/.gitignore
+!/.github/
 !/README.md
 !/shopify-theme/
