@@ -11,7 +11,8 @@ import {
   findProduct,
 } from './store.mjs';
 
-import { renderCampaignHero } from './campaign.mjs';
+import { renderCampaignHero, activateCampaignAutoplay } from './campaign.mjs';
+import { createAutoplay } from './autoplay.mjs';
 
 import {
   el,
@@ -63,6 +64,7 @@ function heroImg(media, ctx, eager, priority) {
 }
 
 let heroIdx = 0;
+let heroAutoplay = null;
 
 function renderHero() {
   const C = state.concept;
@@ -99,24 +101,29 @@ function renderHero() {
   const controls = el('div', { class: 'hero-controls' });
   const prev = el('button', {
     class: 'hero-arrow', type: 'button', 'aria-label': 'Previous slide',
-    onclick: () => slideToState(heroIdx - 1),
+    onclick: () => manualHeroSlide(heroIdx - 1),
   });
   prev.innerHTML = ICON.arrLeft;
   const next = el('button', {
     class: 'hero-arrow', type: 'button', 'aria-label': 'Next slide',
-    onclick: () => slideToState(heroIdx + 1),
+    onclick: () => manualHeroSlide(heroIdx + 1),
   });
   next.innerHTML = ICON.arrRight;
+  const autoplayToggle = el('button', {
+    class: 'hero-autoplay-toggle', type: 'button', 'aria-label': 'Pause slideshow',
+    'aria-pressed': 'false', text: 'Ⅱ',
+  });
   controls.append(
     prev,
     el('span', { class: 'hero-counter', 'aria-hidden': 'true', text: '1 / 3' }),
+    autoplayToggle,
     next,
   );
   hero.append(track, controls, el('p', { class: 'hero-live', 'aria-live': 'polite' }));
 
   hero.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') { e.preventDefault(); slideToState(heroIdx - 1); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); slideToState(heroIdx + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); manualHeroSlide(heroIdx - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); manualHeroSlide(heroIdx + 1); }
   });
 
   let startX = null; let startY = null;
@@ -125,11 +132,28 @@ function renderHero() {
     if (startX == null) return;
     const dx = e.clientX - startX; const dy = e.clientY - startY;
     startX = startY = null;
-    if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy)) slideToState(heroIdx + (dx < 0 ? 1 : -1));
+    if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy)) manualHeroSlide(heroIdx + (dx < 0 ? 1 : -1));
   });
   hero.addEventListener('pointercancel', () => { startX = startY = null; });
 
   return hero;
+}
+
+function manualHeroSlide(i) {
+  heroAutoplay?.manualInteraction();
+  slideToState(i);
+}
+
+function initHeroAutoplay() {
+  heroAutoplay?.dispose();
+  const root = document.getElementById('hero');
+  if (!root) return;
+  heroAutoplay = createAutoplay({
+    root,
+    toggle: root.querySelector('.hero-autoplay-toggle'),
+    live: root.querySelector('.hero-live'),
+    advance: () => slideToState(heroIdx + 1),
+  });
 }
 
 function slideToState(i) {
@@ -339,6 +363,7 @@ async function boot() {
   buildCompareDialog();
 
   const app = document.getElementById('app');
+  heroAutoplay?.dispose();
   app.replaceChildren();
 
   app.append(buildHeader({ activeSlug: null }));
@@ -358,7 +383,12 @@ async function boot() {
   ].filter((n) => n != null));
   app.append(main, buildFooter(), compareFab());
 
-  if (concept !== 'studio') slideToState(0);
+  if (concept !== 'studio') {
+    slideToState(0);
+    initHeroAutoplay();
+  } else {
+    activateCampaignAutoplay(document.getElementById('campaign-hero'));
+  }
   syncBadges();
   bindScroll();
 

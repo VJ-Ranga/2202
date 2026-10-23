@@ -597,6 +597,8 @@ body[data-concept='maison'] .site-head {
 }
 .hero-arrow:hover { color: var(--accent); }
 .hero-arrow svg { width: 18px; height: 18px; }
+.hero-autoplay-toggle { width: 44px; height: 44px; display: grid; place-items: center; font-size: 16px; font-weight: 700; }
+.hero-autoplay-toggle:hover, .hero-autoplay-toggle:focus-visible { color: var(--accent); }
 .hero-counter {
   min-width: 52px;
   text-align: center;
@@ -2530,6 +2532,8 @@ body[data-concept='studio'] .head-row-main .brand { grid-column: 2; justify-self
 }
 .campaign-arrow:hover { color: var(--accent); }
 .campaign-arrow svg { width: 20px; height: 20px; }
+.campaign-autoplay-toggle { width: 44px; height: 44px; display: grid; place-items: center; font-size: 16px; font-weight: 700; color: var(--ink); }
+.campaign-autoplay-toggle:hover, .campaign-autoplay-toggle:focus-visible { color: var(--accent); }
 .campaign-counter { min-width: 48px; text-align: center; font-size: 13px; color: var(--grey); font-variant-numeric: tabular-nums; }
 .campaign-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .campaign-hero:focus-visible { outline-offset: -3px; }

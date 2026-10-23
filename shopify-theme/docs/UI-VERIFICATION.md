@@ -22,6 +22,13 @@ Date: 2026-10-23
 - Size guide uses exact source chart `assets/images/2025/09/size-chart.webp` copied to `html-demo/assets/images/size-chart-30535-1536.webp` at `1536×1024`; responsive markup retains `960w` fallback and loads exact `1536×1024` asset on modal open. Chart content shows body measurements, bust, waist, low hip, how to measure, and inches. Accessible centered dialog works across all three concepts and both palettes. Desktop dialog measures `1120×810` at 1440px; mobile measures `359×846` at 375px.
 - Size guide zoom controls reach `125%` and preserve chart ratio; browser proof reports `currentSrc` `size-chart-30535-1536.webp`, natural `1536×1024`, and ratio `1.5`; Escape/backdrop close returns focus to `Size guide`, restores body scroll styles and a scrolled `500px` position, and keeps PDP variant/Add to Bag controls functional. Image-load failure shows visible retry guidance instead of blank content.
 
+## Hero autoplay amendment
+
+- Client-approved autoplay supersedes earlier manual-only notes: Atelier, Maison, and Studio campaign heroes advance every 6 seconds and wrap continuously.
+- Shared autoplay lifecycle has one timer per hero, clean disposal, fresh interval after manual arrows/swipes, persistent manual pause, accessible 44px Pause/Play control, and live-region suppression during automatic rotation.
+- Pointer hover, hero focus, hidden tab, out-of-view state, open dialogs, pagehide, and reduced motion stop autoplay. Reduced-motion default shows `Play slideshow` and one click explicitly starts playback; runtime preference changes return control to Play. Touch pointers do not trigger desktop hover pause. Explicit Play can override reduced-motion default; Play resumes only after relevant automatic blocks clear.
+- Browser proof: Atelier and Studio advanced `1 / 3` to `2 / 3` after 6.3 seconds; pause label changed to `Play slideshow`, slide held after 6.2 seconds, Play label changed to `Pause slideshow`, and resumed to `3 / 3`. Hover pause/resume verified on Studio. No console/page errors. Test tabs and contexts closed.
+
 ## Personalisation
 
 - Trigger renders after normal purchase actions and opens source-owned right drawer.
