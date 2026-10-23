@@ -1,0 +1,37 @@
+{
+    "schema_version": 1,
+    "generated_at": "2026-10-22T11:30:32+00:00",
+    "source": {
+        "platform": "WordPress + WooCommerce",
+        "wordpress_version": "7.1.3",
+        "woocommerce_version": "11.2.0",
+        "site_url": "http://localhost:8099",
+        "installation_path": "/home/vjranga/local/2202lovecolombo/",
+        "table_prefix": "wp_",
+        "source_post_type": "product",
+        "read_only": true
+    },
+    "total": 2,
+    "size_guides": [
+        {
+            "id": 838,
+            "title": "Size and packaging guidelines",
+            "slug": "size-and-packaging-guidelines",
+            "status": "publish",
+            "content_html": "[html_block id=\"827\"]",
+            "content_text": "[html_block id=\"827\"]",
+            "used_by_product_count": 0,
+            "permalink": "http://localhost:8099/?woodmart_size_guide=size-and-packaging-guidelines"
+        },
+        {
+            "id": 29317,
+            "title": "Size Chart - Body Measurements",
+            "slug": "size-chart-old-pink",
+            "status": "publish",
+            "content_html": "&nbsp;\r\n\r\n<img class=\"alignnone size-full wp-image-30535\" src=\"http://localhost:8099/wp-content/uploads/2025/09/size-chart.webp\" alt=\"\" width=\"1536\" height=\"1024\" />",
+            "content_text": "&nbsp;",
+            "used_by_product_count": 112,
+            "permalink": "http://localhost:8099/?woodmart_size_guide=size-chart-old-pink"
+        }
+    ]
+}

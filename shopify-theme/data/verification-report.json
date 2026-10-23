@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-22T11:55:23Z",
+  "status": "pass",
+  "scope": "Product data and product-image reconciliation for the Shopify theme workspace.",
+  "authoritative_source": {
+    "platform": "WordPress + WooCommerce",
+    "site_url": "http://localhost:8099",
+    "wordpress_version": "7.1.3",
+    "woocommerce_version": "11.2.0",
+    "installation_path": "/home/vjranga/local/2202lovecolombo/",
+    "table_prefix": "wp_",
+    "read_only_queries": true
+  },
+  "authoritative_counts": {
+    "products_total": 116,
+    "products_by_status": {
+      "publish": 116
+    },
+    "variations_total": 597,
+    "variations_by_status": {
+      "publish": 597
+    },
+    "products_by_type": {
+      "variable": 113,
+      "simple": 3
+    }
+  },
+  "json_validation": {
+    "data/products.json": {
+      "valid": true,
+      "bytes": 4854271,
+      "top_level_keys": 7
+    },
+    "data/taxonomies.json": {
+      "valid": true,
+      "bytes": 57909,
+      "top_level_keys": 4
+    },
+    "data/product-images.json": {
+      "valid": true,
+      "bytes": 2002886,
+      "top_level_keys": 9
+    },
+    "data/size-guides.json": {
+      "valid": true,
+      "bytes": 1471,
+      "top_level_keys": 5
+    },
+    "data/personalisation.json": {
+      "valid": true,
+      "bytes": 15791,
+      "top_level_keys": 9
+    }
+  },
+  "catalog": {
+    "products_exported": 116,
+    "variations_exported": 597,
+    "product_status_counts_exported": {
+      "auto-draft": 0,
+      "draft": 0,
+      "future": 0,
+      "pending": 0,
+      "private": 0,
+      "publish": 116,
+      "trash": 0
+    },
+    "variation_status_counts_exported": {
+      "auto-draft": 0,
+      "draft": 0,
+      "future": 0,
+      "pending": 0,
+      "private": 0,
+      "publish": 597,
+      "trash": 0
+    },
+    "product_ids_match_source": true,
+    "product_identity_matches_source": true,
+    "product_descriptions_match_source": true,
+    "product_meta_matches_source": true,
+    "variation_ids_match_source": true,
+    "variation_identity_matches_source": true,
+    "variation_meta_matches_source": true,
+    "variation_description_nonempty_source_count": 0,
+    "variation_description_nonempty_exported_count": 0,
+    "size_guides_exported": 2,
+    "size_guide_content_matches_source": true,
+    "catalog_markdown_product_rows": 116,
+    "catalog_markdown_path": "docs/PRODUCT-CATALOG.md",
+    "mismatches": {
+      "counts": [],
+      "product_identity": [],
+      "product_content": [],
+      "product_meta": [],
+      "variation_identity": [],
+      "variation_meta": [],
+      "size_guides": []
+    }
+  },
+  "image_library": {
+    "manifest_relative_path": "assets/image-manifest.json",
+    "destination_root_relative_path": "assets/images",
+    "manifest_schema_keys": [
+      "destinationRoot",
+      "imageCount",
+      "images",
+      "source",
+      "totalBytes"
+    ],
+    "manifest_image_count": 5181,
+    "manifest_total_bytes": 761489786,
+    "manifest_problems": [],
+    "copy_script_relative_path": "scripts/copy-image-library.py",
+    "copy_script_safety": {
+      "source": "/home/vjranga/local/2202lovecolombo/wp-content/uploads",
+      "copy_mode_writes": [
+        "assets/images/",
+        "assets/image-manifest.json"
+      ],
+      "verify_mode_writes": [],
+      "source_is_read_only": true,
+      "uses_checksums": true,
+      "detects_unexpected_destination_files": true,
+      "excluded_private_or_non_image_dirs": [
+        "jetbackup-*",
+        "wc-logs",
+        "woocommerce_uploads",
+        "wpcf7_uploads",
+        "wpcode"
+      ]
+    },
+    "verification_command": "python3 scripts/copy-image-library.py --verify",
+    "verification_exit_code": 0,
+    "verification_output": [
+      "selected images: 5181",
+      "{",
+      "  \"selectedCount\": 5181,",
+      "  \"manifestCount\": 5181,",
+      "  \"destinationCount\": 5181",
+      "}",
+      "excluded [elementor]: 33 files",
+      "excluded [facebook_for_woocommerce]: 22 files",
+      "excluded [fonts]: 36 files",
+      "excluded [jetbackup-1a129969caae]: 38 files",
+      "excluded [non-image files]: 12 files",
+      "excluded [rank-math]: 8 files",
+      "excluded [wc-logs]: 81 files",
+      "excluded [woocommerce_uploads]: 1 files",
+      "excluded [woodmart]: 13 files",
+      "excluded [wpcode]: 5 files",
+      "verification OK"
+    ],
+    "verification_stderr": [],
+    "verification_ok": true
+  },
+  "product_image_reconciliation": {
+    "attachment_count": 450,
+    "attachments_with_destination": 450,
+    "attachments_missing_destination": 0,
+    "reference_count": 1092,
+    "references_by_role": {
+      "featured": 116,
+      "gallery": 372,
+      "variation_additional": 7,
+      "variation_featured": 597
+    },
+    "references_with_destination": 1092,
+    "references_missing_destination": 0,
+    "inline_reference_count": 112,
+    "inline_references_by_role": {
+      "inline_size_guide": 112
+    },
+    "inline_with_destination": 112,
+    "inline_missing_destination": 0,
+    "inline_remote_or_unmapped": [],
+    "inline_remote_count": 0,
+    "inline_unmapped_count": 0,
+    "embedded_image_objects_checked": 1085,
+    "embedded_image_objects_missing_destination": 0,
+    "embedded_image_objects_missing": [],
+    "missing_references": [],
+    "destination_relative_path_convention": "Path relative to the project root, e.g. assets/images/2025/07/name.png"
+  },
+  "personalisation": {
+    "captured_file": "data/personalisation.json",
+    "set_count": 1,
+    "assigned_product_count": 6,
+    "placement_count": 2,
+    "image_count": 4,
+    "images_with_destination": 4,
+    "public_settings_groups": [
+      "behaviour",
+      "design"
+    ],
+    "private_or_credential_like_keys_found": [],
+    "feature_reference": "docs/FUNCTIONAL-REQUIREMENTS.md, Product personalisation (§4)",
+    "assigned_product_ids_exist_in_catalog": true,
+    "assigned_category_ids_exist_in_taxonomies": true,
+    "excluded_private_data": [
+      "customer records",
+      "orders and order item personalisation values",
+      "cart and session data",
+      "users and capabilities",
+      "licence keys, update tokens, and remote update-check responses",
+      "plugin logs and diagnostics"
+    ],
+    "caveat": "Public presentation, placement, step, choice, price, and assignment configuration is captured. Customer selections, orders, carts, users, licence keys, and update data are not exported."
+  },
+  "checks": {
+    "manifest_schema_valid": true,
+    "source_counts_match_export": true,
+    "product_ids_match": true,
+    "product_identity_match": true,
+    "product_content_match": true,
+    "product_meta_match": true,
+    "variation_ids_match": true,
+    "variation_identity_match": true,
+    "variation_meta_match": true,
+    "size_guides_match": true,
+    "catalog_markdown_rows": true,
+    "json_valid": true,
+    "image_library_verify": true,
+    "all_product_references_have_destination": true,
+    "all_attachments_have_destination": true,
+    "all_inline_images_have_destination": true,
+    "all_embedded_product_images_have_destination": true,
+    "personalisation_images_have_destination": true,
+    "personalisation_no_private_keys": true,
+    "personalisation_assigned_products_exist": true,
+    "personalisation_assigned_categories_exist": true
+  },
+  "issues": [],
+  "limitations": [
+    "All 116 source products are published; draft, private, trash, pending, future, and auto-draft product counts are zero.",
+    "No product tags or product brands are assigned. Color is a custom attribute on one product only. SKUs are sparse (16 products).",
+    "Product weights and dimensions are empty in the source for every product and variation.",
+    "Three variations have no current or regular price in the source: 30081, 30741, and 31063.",
+    "WooCommerce category term counts are stale for Tops (33 vs 32 actual) and Bottoms (26 vs 23 actual); exported relationship counts are authoritative.",
+    "Upsell and cross-sell IDs are empty. Related IDs follow WooCommerce related-product logic.",
+    "Source image URLs still point to http://localhost:8099. Destination paths are additive and relative to the project root; source paths and URLs remain in the data.",
+    "Inline image detection covers product descriptions, short descriptions, custom tabs, extra content, and size guides. No remote product-content images were found; the only inline product image is the local size-chart.webp used by 112 products."
+  ],
+  "files_touched_by_reconciliation": [
+    "data/products.json",
+    "data/product-images.json",
+    "data/personalisation.json",
+    "data/verification-report.json",
+    "docs/DISCOVERY-SUMMARY.md",
+    "data/export-personalisation.php",
+    "data/reconcile-verify.py"
+  ],
+  "commands": {
+    "image_library_verify": "python3 scripts/copy-image-library.py --verify",
+    "reconcile_and_verify": "python3 data/reconcile-verify.py"
+  }
+}

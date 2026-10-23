@@ -1,0 +1,20 @@
+# Original WordPress media remains a local reference library. The runnable
+# demo includes its own optimized assets under html-demo/assets/.
+/assets/images/
+
+# Browser captures and third-party research screenshots are local evidence.
+/docs/evidence/
+/docs/research/*.jpg
+/docs/research/*.jpeg
+/docs/research/*.png
+/docs/research/*.webp
+
+# Generated caches and local environment files.
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.env.*
+!.env.example
+node_modules/
+*.log

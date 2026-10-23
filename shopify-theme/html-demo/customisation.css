@@ -1,0 +1,57 @@
+.customisation { font-size: 16px; }
+.customisation__trigger { display: block; width: 100%; min-height: 48px; padding: 12px 18px; border: 1px solid #412311; border-radius: 6px; background: transparent; color: #412311; cursor: pointer; font: inherit; font-weight: 700; }
+.customisation__trigger:hover, .customisation__trigger:focus-visible { background: #412311; color: #f8f3ef; }
+.customisation__status { margin: 10px 0 0; color: #8a1c1c; font-weight: 600; }
+.customisation__dialog { position: fixed; inset: 0 0 0 auto; width: min(420px, 100%); max-width: 420px; height: 100dvh; max-height: 100dvh; margin: 0; padding: 0; border: 0; border-radius: 6px 0 0 6px; background: #fff; color: #2a1509; overflow: hidden; }
+.customisation__dialog::backdrop { background: rgb(31 18 11 / 45%); backdrop-filter: blur(4px); }
+.customisation__dialog-header { display: flex; align-items: center; justify-content: center; min-height: 58px; padding: 14px 22px; border-bottom: 1px solid #ece9e4; }
+.customisation__dialog-header h1 { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.customisation__close { position: absolute; top: 10px; right: 14px; width: 44px; height: 44px; border: 0; background: transparent; color: #412311; cursor: pointer; font-size: 28px; line-height: 1; }
+.customisation__progress { height: 3px; background: #ece9e4; }
+.customisation__progress-value { display: block; height: 100%; background: #412311; transition: width .2s ease; }
+.customisation__dialog-content { height: calc(100dvh - 132px); padding: 24px 22px 28px; overflow-y: auto; }
+.customisation__dialog-content h2 { margin: 0 0 18px; font-size: 21px; line-height: 1.25; }
+.customisation__placement-list { display: grid; gap: 14px; }
+.customisation__placement-card { display: grid; grid-template-columns: 1fr auto; align-items: end; min-height: 44px; padding: 0; border: 1.5px solid #8a542f; border-radius: 6px; background: #fff; color: #2a1509; cursor: pointer; overflow: hidden; text-align: left; }
+.customisation__placement-card img { grid-column: 1 / -1; display: block; width: 100%; max-height: 230px; object-fit: cover; }
+.customisation__placement-card > span:not(.customisation__arrow) { padding: 14px 18px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.customisation__arrow { padding: 12px 16px; font-size: 24px; }
+.customisation__steps { margin: 0; padding: 0; border: 0; }
+.customisation__steps legend { margin-bottom: 18px; font-size: 21px; font-weight: 700; }
+.customisation__step { padding: 16px 0; border-top: 1px solid #ece9e4; }
+.customisation__step h3 { margin: 0 0 12px; font-size: 15px; font-weight: 700; }
+.customisation__step.is-locked { opacity: .32; pointer-events: none; }
+.customisation__step label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 600; }
+.customisation__input-row { display: flex; align-items: center; gap: 10px; }
+.customisation__input-row input { min-height: 44px; flex: 1; padding: 9px 10px; border: 1px solid #8a542f; border-radius: 6px; font: inherit; }
+.customisation__count { min-width: 44px; color: #625e56; font-size: 14px; text-align: right; }
+.customisation__choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.customisation__choice { min-height: 76px; padding: 8px; border: 1px solid #bdb8af; border-radius: 6px; background: #fff; cursor: pointer; font: inherit; font-size: 14px; }
+.customisation__choice[aria-pressed='true'] { outline: 2px solid #412311; outline-offset: 2px; }
+.customisation__choice img { display: block; width: 100%; height: 42px; margin-bottom: 4px; object-fit: contain; }
+.customisation__choice--color { position: relative; padding-top: 34px; }
+.customisation__choice--color::before { content: ''; position: absolute; top: 8px; left: 50%; width: 22px; height: 22px; transform: translateX(-50%); border: 1px solid #999; background: var(--custom-colour, transparent); }
+.customisation__choice--neutral::before { background: transparent; }
+.customisation__dialog-footer { position: absolute; right: 0; bottom: 0; left: 0; display: grid; gap: 8px; padding: 16px 22px 22px; border-top: 1px solid #ece9e4; background: #fff; box-shadow: 0 -5px 16px rgb(42 21 9 / 7%); }
+.customisation__primary, .customisation__secondary, .customisation__add-another { display: block; min-height: 48px; padding: 12px 16px; border: 1px solid #412311; border-radius: 6px; cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-align: center; text-decoration: none; text-transform: uppercase; }
+.customisation__primary { background: #412311; color: #fff; }
+.customisation__secondary, .customisation__add-another { background: #fff; color: #412311; }
+.customisation__primary:disabled { opacity: .55; cursor: wait; }
+.customisation__dialog-error { margin: 12px 0 0; color: #8a1c1c; font-size: 14px; font-weight: 600; }
+.customisation__review-card { margin: 0 0 14px; padding: 14px; border: 1px solid #d8d4cc; border-radius: 6px; }
+.customisation__review-heading { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+.customisation__review-heading > span { display: flex; gap: 8px; }
+.customisation__review-card p { margin: 8px 0 0; font-size: 14px; }
+.customisation__text-button { border: 0; background: transparent; color: #412311; cursor: pointer; font: inherit; font-size: 12px; text-decoration: underline; text-transform: uppercase; }
+.customisation__fee-line, .customisation__total { font-size: 14px; }
+.customisation__total { font-weight: 700; }
+.customisation__success h2 { margin-top: 0; }
+.customisation__success-actions { display: grid; gap: 8px; margin-top: 20px; }
+.customisation__confirm-layer { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; padding: 22px; background: rgb(31 18 11 / 45%); }
+.customisation__confirm-box { width: 100%; padding: 20px; border-radius: 6px; background: #fff; box-shadow: 0 12px 32px rgb(42 21 9 / 22%); }
+.customisation__confirm-box h2 { margin: 0 0 18px; font-size: 18px; }
+.customisation__confirm-actions { display: grid; gap: 8px; }
+.customisation [hidden] { display: none !important; }
+.customisation button:focus-visible, .customisation input:focus-visible, .customisation a:focus-visible { outline: 3px solid #1b5e8a; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .customisation__progress-value { transition: none; } }
+@media (max-width: 500px) { .customisation__dialog { width: 100%; max-width: none; border-radius: 0; } }

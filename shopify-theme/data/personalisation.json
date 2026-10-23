@@ -1,0 +1,464 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-22T11:55:13+00:00",
+  "source": {
+    "platform": "WordPress + WooCommerce",
+    "site_url": "http://localhost:8099",
+    "plugin_slug": "wc-personalisation-panel",
+    "plugin_name": "WC Personalisation Panel",
+    "plugin_version": "0.7.31",
+    "read_only": true
+  },
+  "feature_reference": "docs/FUNCTIONAL-REQUIREMENTS.md, Product personalisation (§4)",
+  "set_count": 1,
+  "sets": [
+    {
+      "id": 30537,
+      "name": "pyjama set",
+      "slug": "pyjama-set",
+      "status": "publish",
+      "price": "1000.00",
+      "price_type": "unit",
+      "apply_all": false,
+      "priority": 10,
+      "assigned_category_ids": [
+        110
+      ],
+      "assigned_categories": [
+        {
+          "id": 110,
+          "name": "Personalised Pyjama",
+          "slug": "personalised-pyjama"
+        }
+      ],
+      "assigned_products": [
+        {
+          "id": 31597,
+          "name": "Burgundy Dreams Long Set",
+          "slug": "burgundy-dreams-long-set",
+          "status": "publish"
+        },
+        {
+          "id": 31630,
+          "name": "Sage Dream PJ Set",
+          "slug": "sage-dream-pj-set",
+          "status": "publish"
+        },
+        {
+          "id": 31638,
+          "name": "Teal Nights Short Set",
+          "slug": "teal-nights-short-set",
+          "status": "publish"
+        },
+        {
+          "id": 31646,
+          "name": "Cocoa Nights Short Set",
+          "slug": "cocoa-nights-short-set",
+          "status": "publish"
+        },
+        {
+          "id": 31654,
+          "name": "Merlot Nights Short Set",
+          "slug": "merlot-nights-short-set",
+          "status": "publish"
+        },
+        {
+          "id": 31662,
+          "name": "Midnight Black Long Set",
+          "slug": "midnight-black-long-set",
+          "status": "publish"
+        }
+      ],
+      "placements": [
+        {
+          "id": "pl_1781159294520253",
+          "name": "Pocket Hem",
+          "image_id": 30538,
+          "image_url": "http://localhost:8099/wp-content/uploads/2026/06/Love-Colombo2303.webp",
+          "steps": [
+            {
+              "id": "st_1781159414707157",
+              "name": "Add Text",
+              "description": "",
+              "type": "text",
+              "choices": [],
+              "placeholder": "Add Text",
+              "max_chars": 10,
+              "price": "0.00"
+            },
+            {
+              "id": "st_1781163044282794",
+              "name": "Select Font",
+              "description": "",
+              "type": "choice",
+              "choices": [
+                {
+                  "id": "ch_1781164631498403",
+                  "name": "Freestyle Script",
+                  "image_id": 30539,
+                  "image_url": "http://localhost:8099/wp-content/uploads/2026/06/Freestyle-Script.jpg",
+                  "color": "#000000",
+                  "price": "0.00",
+                  "destination_relative_path": "assets/images/2026/06/Freestyle-Script.jpg",
+                  "destination_exists": true,
+                  "destination_bytes": 44033,
+                  "destination_sha256": "3ac3aeadb2a3856ca1ab269db3b59888f09892831f55f6c40f9efd848c8eea4a",
+                  "destination_sha256_matches_manifest": true,
+                  "copy_status": "copied"
+                },
+                {
+                  "id": "ch_1781164662178324",
+                  "name": "Edwardian Script ITC",
+                  "image_id": 30540,
+                  "image_url": "http://localhost:8099/wp-content/uploads/2026/06/Edwardian-Script-ITC.jpg",
+                  "color": "#000000",
+                  "price": "0.00",
+                  "destination_relative_path": "assets/images/2026/06/Edwardian-Script-ITC.jpg",
+                  "destination_exists": true,
+                  "destination_bytes": 43965,
+                  "destination_sha256": "632d5da9dfaf18ed3deaf167f5756734d320097f3dade539ffe866c32780d23a",
+                  "destination_sha256_matches_manifest": true,
+                  "copy_status": "copied"
+                }
+              ]
+            },
+            {
+              "id": "st_1781164728789490",
+              "name": "Select Colour",
+              "description": "",
+              "type": "color",
+              "choices": [
+                {
+                  "id": "ch_1781164736654924",
+                  "name": "off white",
+                  "image_id": 0,
+                  "image_url": "",
+                  "color": "#e7e5d6",
+                  "price": "0.00"
+                },
+                {
+                  "id": "ch_1781164738876271",
+                  "name": "Black",
+                  "image_id": 0,
+                  "image_url": "",
+                  "color": "#000000",
+                  "price": "0.00"
+                },
+                {
+                  "id": "ch_1791541136050355",
+                  "name": "White",
+                  "image_id": 0,
+                  "image_url": "",
+                  "color": "#ffffff",
+                  "price": "0.00"
+                }
+              ]
+            }
+          ],
+          "destination_relative_path": "assets/images/2026/06/Love-Colombo2303.webp",
+          "destination_exists": true,
+          "destination_bytes": 183890,
+          "destination_sha256": "4ea130d903bde8ac644a5e36068b18a460ca6c77868a9151d61e987ab4a77422",
+          "destination_sha256_matches_manifest": true,
+          "copy_status": "copied"
+        },
+        {
+          "id": "pl_1790323324712485",
+          "name": "Pocket",
+          "image_id": 31594,
+          "image_url": "http://localhost:8099/wp-content/uploads/2026/09/Pocket2.jpeg",
+          "steps": [
+            {
+              "id": "st_1790323324713153",
+              "name": "Add Text",
+              "description": "",
+              "type": "text",
+              "choices": [],
+              "placeholder": "Add Text",
+              "max_chars": 10,
+              "price": "0.00"
+            },
+            {
+              "id": "st_1790323324713647",
+              "name": "Select Font",
+              "description": "",
+              "type": "choice",
+              "choices": [
+                {
+                  "id": "ch_1781164631498403",
+                  "name": "Freestyle Script",
+                  "image_id": 30539,
+                  "image_url": "http://localhost:8099/wp-content/uploads/2026/06/Freestyle-Script.jpg",
+                  "color": "#000000",
+                  "price": "0.00",
+                  "destination_relative_path": "assets/images/2026/06/Freestyle-Script.jpg",
+                  "destination_exists": true,
+                  "destination_bytes": 44033,
+                  "destination_sha256": "3ac3aeadb2a3856ca1ab269db3b59888f09892831f55f6c40f9efd848c8eea4a",
+                  "destination_sha256_matches_manifest": true,
+                  "copy_status": "copied"
+                },
+                {
+                  "id": "ch_1781164662178324",
+                  "name": "Edwardian Script ITC",
+                  "image_id": 30540,
+                  "image_url": "http://localhost:8099/wp-content/uploads/2026/06/Edwardian-Script-ITC.jpg",
+                  "color": "#000000",
+                  "price": "0.00",
+                  "destination_relative_path": "assets/images/2026/06/Edwardian-Script-ITC.jpg",
+                  "destination_exists": true,
+                  "destination_bytes": 43965,
+                  "destination_sha256": "632d5da9dfaf18ed3deaf167f5756734d320097f3dade539ffe866c32780d23a",
+                  "destination_sha256_matches_manifest": true,
+                  "copy_status": "copied"
+                }
+              ]
+            },
+            {
+              "id": "st_179032332471471",
+              "name": "Select Colour",
+              "description": "",
+              "type": "color",
+              "choices": [
+                {
+                  "id": "ch_1781164736654924",
+                  "name": "Navy",
+                  "image_id": 0,
+                  "image_url": "",
+                  "color": "#e7e5d6",
+                  "price": "0.00"
+                },
+                {
+                  "id": "ch_1781164738876271",
+                  "name": "Black",
+                  "image_id": 0,
+                  "image_url": "",
+                  "color": "#000000",
+                  "price": "0.00"
+                },
+                {
+                  "id": "ch_1791541146639950",
+                  "name": "White",
+                  "image_id": 0,
+                  "image_url": "",
+                  "color": "#ffffff",
+                  "price": "0.00"
+                }
+              ]
+            }
+          ],
+          "destination_relative_path": "assets/images/2026/09/Pocket2.jpeg",
+          "destination_exists": true,
+          "destination_bytes": 379308,
+          "destination_sha256": "2714c10c6ba1eda94ffab0893117ada75a39f1e057d8acf02f340d1be83a151d",
+          "destination_sha256_matches_manifest": true,
+          "copy_status": "copied"
+        }
+      ]
+    }
+  ],
+  "public_configuration": {
+    "settings": {
+      "design": {
+        "btn_text": "Add Personalisation",
+        "btn_style": "outline",
+        "btn_bg": "#412311",
+        "btn_text_color": "#f8f3ef",
+        "btn_radius": 6,
+        "btn_placement": "after_form",
+        "btn_full_width": 1,
+        "btn_animation": "lift",
+        "btn_pad_top": 15,
+        "btn_pad_right": 26,
+        "btn_pad_bottom": 15,
+        "btn_pad_left": 26,
+        "btn_margin_top": 12,
+        "btn_margin_right": 0,
+        "btn_margin_bottom": 0,
+        "btn_margin_left": 0,
+        "btn_font_size": 13,
+        "btn_border_width": 1.5,
+        "btn_letter_spacing": 0.08,
+        "placement_layout": "list",
+        "step_flow": "stacked",
+        "panel_content_pad": 22,
+        "footer_btn_radius": 6,
+        "footer_btn_font_size": 12,
+        "footer_btn_padding_v": 16,
+        "slide_from": "right",
+        "panel_width": 420,
+        "mobile_bp": 500,
+        "panel_bg": "#ffffff",
+        "font_family": "inherit",
+        "panel_radius": 6,
+        "overlay_color": "#1f120b",
+        "overlay_opacity": 45,
+        "anim_speed": 350,
+        "header_title": "Add Personalisation",
+        "title_color": "#2a1509",
+        "progress_show": 1,
+        "progress_style": "bar",
+        "progress_color": "#412311",
+        "card_layout": "grid3",
+        "card_border": "#8a542f",
+        "card_selected": "#412311",
+        "card_img_size": 96,
+        "card_img_fit": "cover",
+        "card_img_aspect": "square",
+        "next_text": "Next",
+        "back_text": "Back",
+        "addbag_text": "Add to Bag",
+        "footer_btn_color": "#412311",
+        "show_choice_price": 1,
+        "show_total": 1,
+        "free_label": "Free"
+      },
+      "behaviour": {
+        "enabled": 1,
+        "non_returnable": 0,
+        "elementor": 0,
+        "remove_on_uninstall": 0,
+        "success_message": "Artwork preview sent via WhatsApp or email for approval before production"
+      }
+    },
+    "design_keys": [
+      "btn_text",
+      "btn_style",
+      "btn_bg",
+      "btn_text_color",
+      "btn_radius",
+      "btn_placement",
+      "btn_full_width",
+      "btn_animation",
+      "btn_pad_top",
+      "btn_pad_right",
+      "btn_pad_bottom",
+      "btn_pad_left",
+      "btn_margin_top",
+      "btn_margin_right",
+      "btn_margin_bottom",
+      "btn_margin_left",
+      "btn_font_size",
+      "btn_border_width",
+      "btn_letter_spacing",
+      "placement_layout",
+      "step_flow",
+      "panel_content_pad",
+      "footer_btn_radius",
+      "footer_btn_font_size",
+      "footer_btn_padding_v",
+      "slide_from",
+      "panel_width",
+      "mobile_bp",
+      "panel_bg",
+      "font_family",
+      "panel_radius",
+      "overlay_color",
+      "overlay_opacity",
+      "anim_speed",
+      "header_title",
+      "title_color",
+      "progress_show",
+      "progress_style",
+      "progress_color",
+      "card_layout",
+      "card_border",
+      "card_selected",
+      "card_img_size",
+      "card_img_fit",
+      "card_img_aspect",
+      "next_text",
+      "back_text",
+      "addbag_text",
+      "footer_btn_color",
+      "show_choice_price",
+      "show_total",
+      "free_label"
+    ],
+    "behaviour_keys": [
+      "enabled",
+      "non_returnable",
+      "elementor",
+      "remove_on_uninstall",
+      "success_message"
+    ]
+  },
+  "images": [
+    {
+      "attachment_id": 30538,
+      "filename": "Love-Colombo2303.webp",
+      "relative_path": "2026/06/Love-Colombo2303.webp",
+      "source_path": "/home/vjranga/local/2202lovecolombo/wp-content/uploads/2026/06/Love-Colombo2303.webp",
+      "url": "http://localhost:8099/wp-content/uploads/2026/06/Love-Colombo2303.webp",
+      "width": 1600,
+      "height": 2400,
+      "filesize": 183890,
+      "mime_type": "image/webp",
+      "destination_relative_path": "assets/images/2026/06/Love-Colombo2303.webp",
+      "destination_exists": true,
+      "destination_bytes": 183890,
+      "destination_sha256": "4ea130d903bde8ac644a5e36068b18a460ca6c77868a9151d61e987ab4a77422",
+      "destination_sha256_matches_manifest": true,
+      "copy_status": "copied"
+    },
+    {
+      "attachment_id": 30539,
+      "filename": "Freestyle-Script.jpg",
+      "relative_path": "2026/06/Freestyle-Script.jpg",
+      "source_path": "/home/vjranga/local/2202lovecolombo/wp-content/uploads/2026/06/Freestyle-Script.jpg",
+      "url": "http://localhost:8099/wp-content/uploads/2026/06/Freestyle-Script.jpg",
+      "width": 512,
+      "height": 512,
+      "filesize": 44033,
+      "mime_type": "image/jpeg",
+      "destination_relative_path": "assets/images/2026/06/Freestyle-Script.jpg",
+      "destination_exists": true,
+      "destination_bytes": 44033,
+      "destination_sha256": "3ac3aeadb2a3856ca1ab269db3b59888f09892831f55f6c40f9efd848c8eea4a",
+      "destination_sha256_matches_manifest": true,
+      "copy_status": "copied"
+    },
+    {
+      "attachment_id": 30540,
+      "filename": "Edwardian-Script-ITC.jpg",
+      "relative_path": "2026/06/Edwardian-Script-ITC.jpg",
+      "source_path": "/home/vjranga/local/2202lovecolombo/wp-content/uploads/2026/06/Edwardian-Script-ITC.jpg",
+      "url": "http://localhost:8099/wp-content/uploads/2026/06/Edwardian-Script-ITC.jpg",
+      "width": 512,
+      "height": 512,
+      "filesize": 43965,
+      "mime_type": "image/jpeg",
+      "destination_relative_path": "assets/images/2026/06/Edwardian-Script-ITC.jpg",
+      "destination_exists": true,
+      "destination_bytes": 43965,
+      "destination_sha256": "632d5da9dfaf18ed3deaf167f5756734d320097f3dade539ffe866c32780d23a",
+      "destination_sha256_matches_manifest": true,
+      "copy_status": "copied"
+    },
+    {
+      "attachment_id": 31594,
+      "filename": "Pocket2.jpeg",
+      "relative_path": "2026/09/Pocket2.jpeg",
+      "source_path": "/home/vjranga/local/2202lovecolombo/wp-content/uploads/2026/09/Pocket2.jpeg",
+      "url": "http://localhost:8099/wp-content/uploads/2026/09/Pocket2.jpeg",
+      "width": 1086,
+      "height": 1448,
+      "filesize": 379308,
+      "mime_type": "image/jpeg",
+      "destination_relative_path": "assets/images/2026/09/Pocket2.jpeg",
+      "destination_exists": true,
+      "destination_bytes": 379308,
+      "destination_sha256": "2714c10c6ba1eda94ffab0893117ada75a39f1e057d8acf02f340d1be83a151d",
+      "destination_sha256_matches_manifest": true,
+      "copy_status": "copied"
+    }
+  ],
+  "excluded_private_data": [
+    "customer records",
+    "orders and order item personalisation values",
+    "cart and session data",
+    "users and capabilities",
+    "licence keys, update tokens, and remote update-check responses",
+    "plugin logs and diagnostics"
+  ]
+}
