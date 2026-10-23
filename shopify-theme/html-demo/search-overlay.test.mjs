@@ -6,7 +6,9 @@ import {
   createSearchOverlay,
   pickSuggestions,
   pickNewArrivals,
+  pickRecommendations,
   pickResults,
+  materialLine,
   noResultsCopy,
   buildSearchHref,
   MAX_RESULTS,
@@ -144,4 +146,78 @@ test('buildSearchHref forwards the trimmed query to urls.search', () => {
   assert.equal(buildSearchHref(urls, '  silk dress '), urls.search('silk dress'));
   assert.equal(buildSearchHref(urls, ''), urls.search(''));
   assert.equal(buildSearchHref(urls, undefined), urls.search(''));
+});
+
+// ---------- curated recommendations (redesigned default state) ----------
+
+test('pickRecommendations returns the six real curated picks in source order', () => {
+  const picked = pickRecommendations(data.products);
+  assert.deepEqual(picked.map((p) => p.id), [31662, 31597, 30895, 31845, 31787, 31030]);
+  assert.equal(new Set(picked.map((p) => p.id)).size, 6, 'unique ids');
+  for (const p of picked) {
+    assert.ok(data.products.includes(p), 'returns the real catalog entry, never a copy or invention');
+    assert.equal(typeof p.price, 'number');
+    assert.equal(typeof p.name, 'string');
+    assert.ok(p.image?.src, 'real photo');
+  }
+});
+
+test('pickRecommendations fills missing picks from newest real products, max 6, no invention', () => {
+  const subset = data.products.filter((p) => p.id !== 31030);
+  const picked = pickRecommendations(subset);
+  assert.equal(picked.length, 6);
+  assert.equal(new Set(picked.map((p) => p.id)).size, 6);
+  assert.ok(!picked.some((p) => p.id === 31030));
+  assert.deepEqual(picked.slice(0, 5).map((p) => p.id), [31662, 31597, 30895, 31845, 31787]);
+  for (const p of picked) assert.ok(subset.includes(p), 'fallback picks are real subset entries');
+  const newestIds = pickNewArrivals(subset).map((p) => p.id);
+  assert.ok(newestIds.includes(picked[5].id), 'fill comes from pickNewArrivals order');
+});
+
+test('pickRecommendations guards empty and short catalogs', () => {
+  assert.deepEqual(pickRecommendations(null), []);
+  assert.deepEqual(pickRecommendations([]), []);
+  const two = data.products.slice(0, 2);
+  const picked = pickRecommendations(two);
+  assert.ok(picked.length <= 6);
+  picked.forEach((p) => assert.ok(two.includes(p)));
+});
+
+// ---------- live query ----------
+
+test('live query keeps the real three Mocha matches', () => {
+  const { total, shown } = pickResults(data.products, 'mocha');
+  assert.equal(total, 3);
+  assert.equal(shown.length, 3);
+  assert.deepEqual(shown.map((p) => p.name),
+    ['Mocha Essential Maxi Dress', 'Mocha Essential Maxi Skirt', 'Mocha Wide Leg Pant']);
+});
+
+// ---------- material line (only when the source carries a Fabric line) ----------
+
+test('materialLine reads the actual source Fabric line, verbatim', () => {
+  const set = data.products.find((p) => p.id === 31662);
+  const line = materialLine(set);
+  assert.equal(line, 'Soft Silky Satin'); /* colon form wins: verbatim 'Fabric: Soft Silky Satin' */
+  const source = `${set.fullDescription ?? ''}\n${set.description ?? ''}`;
+  assert.ok(source.includes(line), 'value comes verbatim from source, never invented');
+});
+
+test('materialLine matches the colon form too and stays consistent with source', () => {
+  const source = (p) => `${p.fullDescription ?? ''}\n${p.description ?? ''}`;
+  const colonProduct = data.products.find((p) => /^\s*Fabric\s*:/mi.test(source(p)));
+  assert.ok(colonProduct, 'catalog carries at least one Fabric: line');
+  const line = materialLine(colonProduct);
+  const captured = source(colonProduct).match(/^\s*Fabric\s*:\s*(.+)$/mi)?.[1]?.trim();
+  assert.equal(line, captured);
+  assert.ok(source(colonProduct).includes(line));
+});
+
+test('materialLine omits products without any Fabric line', () => {
+  const none = data.products.find((p) => materialLine(p) === null);
+  assert.ok(none, 'at least one real product has no Fabric line to show');
+  assert.equal(materialLine({}), null);
+  assert.equal(materialLine(null), null);
+  assert.equal(materialLine({ description: 'Crafted from soft stretch rib fabric, it gently contours.' }), null,
+    'mid-sentence prose is not a Fabric line');
 });
