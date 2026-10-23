@@ -1,7 +1,9 @@
 /**
  * core.js — shared runtime for the 2202 Love Colombo multipage HTML demo.
- * All commerce controls NAVIGATE to separate HTML documents. The only
- * remaining modals are the mobile menu drawer and the comparison switcher.
+ * Commerce controls navigate between documents; header cart/search open the
+ * frozen cart-drawer.mjs / search-overlay.mjs modals (both import store.mjs
+ * only, so importing them here creates no cycle). Other modals stay limited
+ * to the mobile menu drawer and the comparison switcher.
  * Data: read-only local assets/demo-data.json. Logic: store.mjs.
  */
 
@@ -20,6 +22,9 @@ import {
   saveJSON,
   MAX_QUANTITY,
 } from './store.mjs';
+
+import { createCartDrawer } from './cart-drawer.mjs';
+import { createSearchOverlay } from './search-overlay.mjs';
 
 /* ---------------- location / url ---------------- */
 
@@ -236,12 +241,36 @@ export function primaryNav(activeSlug) {
 
 export function utilButtons(compact = false) {
   const utils = el('div', { class: 'head-utils' });
-  const search = el('a', { class: 'icon-btn head-util-search', href: searchUrl(QS.get('q') ?? ''), 'aria-label': 'Search styles' });
+  /* Real <a href> stays: Ctrl/Meta/Shift/Alt/middle clicks open the native
+     full page in a new tab; only an unmodified primary click intercepts. */
+  const search = el('a', {
+    class: 'icon-btn head-util-search',
+    href: searchUrl(QS.get('q') ?? ''),
+    'aria-label': 'Open search',
+    'aria-haspopup': 'dialog',
+    'aria-expanded': 'false',
+    onclick: (event) => {
+      if (!isUnmodifiedPrimaryClick(event)) return;
+      event.preventDefault();
+      void openSearchOverlay(event.currentTarget, QS.get('q') ?? '');
+    },
+  });
   search.innerHTML = ICON.search;
   const wish = el('a', { class: 'icon-btn head-util-wish', href: pageUrl('wishlist.html'), 'aria-label': 'Open wishlist' });
   wish.innerHTML = ICON.heart;
   wish.append(el('span', { class: 'badge', 'aria-hidden': 'true' }));
-  const cart = el('a', { class: 'icon-btn head-util-cart', href: pageUrl('cart.html'), 'aria-label': 'Open cart' });
+  const cart = el('a', {
+    class: 'icon-btn head-util-cart',
+    href: pageUrl('cart.html'),
+    'aria-label': 'Open cart',
+    'aria-haspopup': 'dialog',
+    'aria-expanded': 'false',
+    onclick: (event) => {
+      if (!isUnmodifiedPrimaryClick(event)) return;
+      event.preventDefault();
+      void openCartDrawer(event.currentTarget);
+    },
+  });
   cart.innerHTML = ICON.bag;
   cart.append(el('span', { class: 'badge', 'aria-hidden': 'true' }));
   const acc = el('a', { class: 'icon-btn head-util-acc', href: accountUrl(), 'aria-label': 'My account' });
@@ -354,7 +383,171 @@ export function syncBadges() {
     if (!wb) { wb = el('span', { class: 'badge' }); wishBtn.appendChild(wb); }
     wb.textContent = String(state.wishlist.length || '');
   }
+  /* Outside mutations (PDP add, storage event, cart page edits) keep an open
+     drawer live. The drawer's own commit path skips this: its setCart changes
+     state, then the module re-renders itself — refreshing here would race the
+     module's focus state transitions. Failures never throw. */
+  if (cartDrawerCommitting || !cartDrawerPromise) return;
+  cartDrawerPromise
+    .then((drawer) => { if (drawer.isOpen) drawer.refresh(); })
+    .catch(() => {});
 }
+
+/* ---------------- cart drawer + search overlay integration ---------------- */
+
+/* Frozen module APIs:
+ *   createCartDrawer({ getCart, getProducts, setCart, urls, onChange })
+ *     -> { open(invoker), close(), refresh(), isOpen }
+ *   createSearchOverlay({ getProducts, getNavigation, urls })
+ *     -> { open(invoker, initialQuery), close(), isOpen }
+ * Factories are lazy single promises: created on the first header click, CSS
+ * awaited before resolve, and a rejection clears the memo so the next click
+ * retries while this click falls back to the full page (no dead header).
+ */
+
+const CART_DRAWER_ID = 'cart-drawer';
+const SEARCH_OVERLAY_ID = 'spo-search-overlay';
+
+let cartDrawerPromise = null;
+let searchOverlayPromise = null;
+let cartDrawerCommitting = false;
+
+export function onCartDocument() {
+  try {
+    return new URL(window.location.href).pathname.endsWith('/cart.html');
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Central commit for drawer mutations: normalize -> state -> persist ->
+ * badges. Marking the commit window keeps syncBadges from re-rendering the
+ * drawer while the module itself is about to render.
+ */
+async function commitDrawerCart(next) {
+  cartDrawerCommitting = true;
+  try {
+    state.cart = normalizeCart(next);
+    persistCart();
+    syncBadges();
+  } finally {
+    cartDrawerCommitting = false;
+  }
+}
+
+export function ensureCartDrawer() {
+  cartDrawerPromise ??= createCartDrawer({
+    getCart: () => state.cart,
+    getProducts: () => state.data?.products ?? [],
+    setCart: commitDrawerCart,
+    urls: {
+      cart: pageUrl('cart.html'),
+      shop: collectionUrl('all'),
+      /* Checkout hands off to the existing full cart document in preview mode:
+         cart.html?checkout=preview shows the established unavailable notice. */
+      checkout: pageUrl('cart.html', { checkout: 'preview' }),
+      product: (id) => productUrl(Number(id)),
+    },
+    onChange: () => {
+      /* Ships on the established wishlist rerender pattern: a full cart
+         document rebuild, not stale inline copies. */
+      if (onCartDocument() && typeof window.__rerenderCart === 'function') {
+        window.__rerenderCart();
+      }
+    },
+  }).catch((error) => {
+    cartDrawerPromise = null;
+    throw error;
+  });
+  return cartDrawerPromise;
+}
+
+export function ensureSearchOverlay() {
+  searchOverlayPromise ??= createSearchOverlay({
+    getProducts: () => state.data?.products ?? [],
+    getNavigation: () => state.data?.navigation ?? [],
+    urls: {
+      search: (q) => searchUrl(q),
+      product: (id) => productUrl(Number(id)),
+      collection: (slug) => collectionUrl(slug),
+      shop: collectionUrl('all'),
+    },
+  }).catch((error) => {
+    searchOverlayPromise = null;
+    throw error;
+  });
+  return searchOverlayPromise;
+}
+
+/** Middle click, or Ctrl/Meta/Shift/Alt click: native <a href> behaviour wins. */
+export function isUnmodifiedPrimaryClick(event) {
+  return event.button === 0 && !event.ctrlKey && !event.metaKey
+    && !event.shiftKey && !event.altKey;
+}
+
+/**
+ * Header is inert while any modal is up (showModal top layer), but focus can
+ * land on a header icon between modals or via keyboard. Never silently close
+ * someone else's dialog — dirty customisation choices would be lost. See
+ * the customisation guard: its success view commits the line and the next
+ * header cart click shows the fee; we do not stack a second modal.
+ */
+export function foreignModalOpen(ownDialogId) {
+  /* Our own cart/search pair may hand over to each other (the frozen open()
+     path closes the previous one first). Any other open modal — the
+     customisation drawer (no id on purpose), size guide, compare, mobile
+     menu — is foreign: wait instead of silently discarding user choices. */
+  const own = new Set([CART_DRAWER_ID, SEARCH_OVERLAY_ID, ownDialogId]);
+  return [...document.querySelectorAll('dialog[open]')]
+    .some((node) => node.id === '' || !own.has(node.id));
+}
+
+function armHeaderButton(marker, dialogId) {
+  const btn = document.querySelector(marker);
+  if (!btn) return;
+  const dlg = document.getElementById(dialogId);
+  if (!dlg) return;
+  if (!btn.dataset.ariaLinked) {
+    btn.dataset.ariaLinked = '1';
+    btn.setAttribute('aria-controls', dlg.id);
+    dlg.addEventListener('close', () => btn.setAttribute('aria-expanded', 'false'), { once: false });
+  }
+}
+
+export async function openCartDrawer(invoker = null) {
+  const btn = invoker instanceof Element && invoker.closest('.head-util-cart')
+    ? invoker : document.querySelector('.head-util-cart');
+  if (foreignModalOpen(CART_DRAWER_ID)) return;
+  try {
+    const drawer = await ensureCartDrawer();
+    armHeaderButton('.head-util-cart', CART_DRAWER_ID);
+    if (foreignModalOpen(CART_DRAWER_ID)) return; /* another modal raced in */
+    drawer.open(invoker ?? btn);
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  } catch (error) {
+    console.warn('core.js: cart drawer unavailable, navigating to the cart page', error);
+    /* Never a blank app: fall back to the existing full cart page. */
+    if (!onCartDocument()) window.location.assign(pageUrl('cart.html'));
+  }
+}
+
+export async function openSearchOverlay(invoker = null, initialQuery = '') {
+  const btn = invoker instanceof Element && invoker.closest('.head-util-search')
+    ? invoker : document.querySelector('.head-util-search');
+  if (foreignModalOpen(SEARCH_OVERLAY_ID)) return;
+  try {
+    const overlay = await ensureSearchOverlay();
+    armHeaderButton('.head-util-search', SEARCH_OVERLAY_ID);
+    if (foreignModalOpen(SEARCH_OVERLAY_ID)) return;
+    overlay.open(invoker ?? btn, typeof initialQuery === 'string' ? initialQuery : '');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  } catch (error) {
+    console.warn('core.js: search overlay unavailable, navigating to the search page', error);
+    window.location.assign(searchUrl(typeof initialQuery === 'string' ? initialQuery : ''));
+  }
+}
+
 
 /* ---------------- toast ---------------- */
 
@@ -581,6 +774,37 @@ export function compareFab() {
   fab.innerHTML = `<span aria-hidden="true">${ICON.compare}</span><span>Compare previews</span>`;
   return fab;
 }
+
+/* ---------------- cross-tab storage sync ---------------- */
+
+/* Another tab changed localStorage: normalize the new value centrally, fix
+   badges, keep an open drawer live, and rebuild the cart document if visible.
+   The wishlist keeps its existing behaviour untouched — only badges update
+   here so nothing breaks the established wishlist flows. */
+window.addEventListener('storage', (event) => {
+  if (event.key === 'lc-cart') {
+    try {
+      state.cart = normalizeCart(event.newValue ? JSON.parse(event.newValue) : []);
+    } catch (error) {
+      console.warn('core.js: cross-tab cart value was not readable', error);
+      state.cart = normalizeCart([]);
+    }
+    syncBadges();
+    if (onCartDocument() && typeof window.__rerenderCart === 'function') {
+      window.__rerenderCart();
+    }
+  }
+  if (event.key === 'lc-wishlist') {
+    try {
+      const parsed = event.newValue ? JSON.parse(event.newValue) : [];
+      state.wishlist = Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.warn('core.js: cross-tab wishlist value was not readable', error);
+      state.wishlist = [];
+    }
+    syncBadges();
+  }
+});
 
 /* ---------------- scroll stickiness ---------------- */
 

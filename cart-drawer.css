@@ -1,0 +1,600 @@
+/**
+ * cart-drawer.css — scoped styles for the standalone right-hand cart drawer
+ * (cart-drawer.mjs). Every selector is either scoped to html dialog.cart-drawer
+ * or namespaced .cart-drawer-*; nothing leaks into core/pages/app styles.
+ * Local fonts only through inherited --font-body, no @font-face, no remote
+ * assets. Colour tokens come from the existing pure palette and fall back to
+ * brand black/white/grey when previewed without styles.css.
+ */
+
+/* ---------- native <dialog> panel and closed-state guard ----------
+   The drawer is a flex column while [open]. The explicit :not([open]) rule is
+   required because a class-level display:flex otherwise overrides the UA
+   dialog:not([open]) { display:none } rule and leaves an invisible panel. */
+
+html dialog.cart-drawer {
+  --cd-paper: var(--paper, #ffffff);
+  --cd-ink: var(--ink, #000000);
+  --cd-ink-soft: var(--ink-2, #1a1a1a);
+  --cd-grey: var(--grey, #6e6e6e);
+  --cd-line: var(--line, #e5e5e5);
+  --cd-accent: var(--accent, var(--ink, #000000));
+  --cd-accent-contrast: var(--accent-contrast, #ffffff);
+  --cd-soft: #f6f6f6;
+
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 1100;
+  width: 480px;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: var(--cd-paper);
+  color: var(--cd-ink-soft);
+  font-family: var(--font-body, 'Barlow', 'Helvetica Neue', Arial, sans-serif);
+  font-size: 16px;
+  line-height: 1.45;
+  box-shadow: -14px 0 48px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+html dialog.cart-drawer[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Closed-state guard: specificity beats the class display rule above. */
+html dialog.cart-drawer:not([open]) {
+  display: none;
+}
+
+html dialog.cart-drawer::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+html dialog.cart-drawer *,
+html dialog.cart-drawer *::before,
+html dialog.cart-drawer *::after {
+  box-sizing: border-box;
+}
+
+/* ---------- header ---------- */
+
+.cart-drawer-head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 16px;
+  background: var(--cd-paper);
+  border-bottom: 1px solid var(--cd-line);
+}
+
+.cart-drawer-title {
+  margin: 0;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.015em;
+  color: var(--cd-ink);
+}
+
+/* 44×44 close hit target. */
+.cart-drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: -8px -10px -8px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cd-ink);
+  cursor: pointer;
+  transition: background 0.15s var(--ease, ease), color 0.15s var(--ease, ease);
+}
+
+.cart-drawer-close:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--cd-accent);
+}
+
+.cart-drawer-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- scrolling body ---------- */
+
+.cart-drawer-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 20px 24px;
+  scrollbar-width: thin;
+  scrollbar-color: #cfcfcf transparent;
+}
+
+.cart-drawer-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cart-drawer-body::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 8px;
+}
+
+/* ---------- empty state ---------- */
+
+.cart-drawer-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 100%;
+  padding: 48px 16px;
+  text-align: center;
+}
+
+.cart-drawer-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  background: var(--cd-soft);
+  color: var(--cd-ink);
+}
+
+.cart-drawer-empty-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.cart-drawer-empty-title {
+  margin: 0;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--cd-ink);
+}
+
+.cart-drawer-empty-copy {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: var(--cd-grey);
+}
+
+.cart-drawer-empty-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 28px;
+  border: 1px solid var(--cd-ink);
+  background: var(--cd-ink);
+  color: var(--cd-accent-contrast);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s var(--ease, ease), border-color 0.15s var(--ease, ease),
+    color 0.15s var(--ease, ease);
+}
+
+.cart-drawer-empty-link:hover {
+  background: var(--cd-accent);
+  border-color: var(--cd-accent);
+  color: var(--cd-accent-contrast);
+}
+
+/* ---------- populated rows ---------- */
+
+.cart-drawer-lines {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-drawer-line {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 14px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--cd-line);
+}
+
+.cart-drawer-line:last-child {
+  border-bottom: 0;
+}
+
+.cart-drawer-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--cd-soft);
+}
+
+.cart-drawer-thumb.is-empty {
+  color: var(--cd-grey);
+}
+
+.cart-drawer-thumb-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-drawer-thumb-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.cart-drawer-line-info {
+  min-width: 0;
+}
+
+.cart-drawer-line-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cart-drawer-line-name {
+  margin: 0;
+  flex: 1 1 auto;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--cd-ink);
+  text-decoration: none;
+}
+
+a.cart-drawer-line-name:hover {
+  color: var(--cd-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cart-drawer-line-price {
+  flex: none;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--cd-ink);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.cart-drawer-line-option {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--cd-grey);
+}
+
+/* ---------- personalisation detail ---------- */
+
+.cart-drawer-pers {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--cd-soft);
+}
+
+.cart-drawer-pers-title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cd-ink);
+}
+
+.cart-drawer-pers-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cart-drawer-pers-item {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--cd-ink-soft);
+}
+
+.cart-drawer-pers-label {
+  font-weight: 500;
+}
+
+.cart-drawer-pers-meta {
+  color: var(--cd-grey);
+}
+
+.cart-drawer-pers-legacy {
+  margin: 0;
+  font-size: 14px;
+  color: var(--cd-ink-soft);
+}
+
+.cart-drawer-pers-fee {
+  margin: 6px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cd-ink);
+}
+
+/* ---------- quantity and remove controls ---------- */
+
+.cart-drawer-line-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 14px;
+}
+
+.cart-drawer-qty {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--cd-line);
+  background: var(--cd-paper);
+}
+
+.cart-drawer-qty-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cd-ink);
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s var(--ease, ease), color 0.15s var(--ease, ease);
+}
+
+.cart-drawer-qty-btn:hover:not([disabled]) {
+  background: var(--cd-soft);
+  color: var(--cd-accent);
+}
+
+.cart-drawer-qty-btn[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cart-drawer-qty-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  padding: 0 4px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--cd-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.cart-drawer-remove {
+  min-height: 44px;
+  margin-left: auto;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: var(--cd-grey);
+  font: inherit;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.cart-drawer-remove:hover {
+  color: var(--cd-accent);
+}
+
+/* ---------- footer summaries and actions ---------- */
+
+.cart-drawer-foot {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  flex: none;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--cd-paper);
+  border-top: 1px solid var(--cd-line);
+}
+
+.cart-drawer-foot[hidden] {
+  display: none;
+}
+
+.cart-drawer-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cart-drawer-total-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cart-drawer-total-label {
+  font-size: 16px;
+  color: var(--cd-ink-soft);
+}
+
+.cart-drawer-total-value {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--cd-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.cart-drawer-shipping {
+  margin: -4px 0 2px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--cd-grey);
+}
+
+.cart-drawer-checkout,
+.cart-drawer-viewcart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s var(--ease, ease), border-color 0.15s var(--ease, ease),
+    color 0.15s var(--ease, ease);
+}
+
+.cart-drawer-checkout {
+  border: 1px solid var(--cd-ink);
+  background: var(--cd-ink);
+  color: var(--cd-accent-contrast);
+}
+
+.cart-drawer-checkout:hover:not([disabled]) {
+  background: var(--cd-accent);
+  border-color: var(--cd-accent);
+  color: var(--cd-accent-contrast);
+}
+
+.cart-drawer-checkout[disabled] {
+  border-color: var(--cd-line);
+  background: var(--cd-soft);
+  color: var(--cd-grey);
+  cursor: not-allowed;
+}
+
+.cart-drawer-viewcart {
+  border: 1px solid var(--cd-ink);
+  background: transparent;
+  color: var(--cd-ink);
+}
+
+.cart-drawer-viewcart:hover {
+  background: var(--cd-ink);
+  color: var(--cd-accent-contrast);
+}
+
+.cart-drawer-unavailable {
+  margin: -2px 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--cd-grey);
+  text-align: center;
+}
+
+/* ---------- focus and announcements ---------- */
+
+html dialog.cart-drawer :is(a, button):focus-visible {
+  outline: 2px solid var(--cd-accent);
+  outline-offset: 2px;
+}
+
+.cart-drawer-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- motion ---------- */
+
+@keyframes cart-drawer-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html dialog.cart-drawer[open] {
+    animation: cart-drawer-slide-in 0.22s var(--ease, ease);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-drawer-close,
+  .cart-drawer-empty-link,
+  .cart-drawer-qty-btn,
+  .cart-drawer-checkout,
+  .cart-drawer-viewcart {
+    transition: none;
+  }
+}
+
+/* ---------- full-width on phones ---------- */
+
+@media (max-width: 600px) {
+  html dialog.cart-drawer {
+    width: 100vw;
+    max-width: 100vw;
+  }
+
+  .cart-drawer-head {
+    padding: 14px 16px 12px;
+  }
+
+  .cart-drawer-body {
+    padding: 4px 16px 20px;
+  }
+
+  .cart-drawer-foot {
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .cart-drawer-line {
+    grid-template-columns: 80px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .cart-drawer-thumb {
+    width: 80px;
+  }
+}

@@ -463,7 +463,7 @@ body[data-concept='maison'] .site-head {
   body[data-concept='maison'] { padding-top: 0; }
 }
 @media (max-width: 500px) {
-  .head-util-search { display: none; }
+  /* Search stays visible while shopping below 500px (drawer/overlay integration). */
 }
 
 /* =========================================================
@@ -2495,7 +2495,10 @@ body[data-concept='studio'] .head-row-main .brand { grid-column: 2; justify-self
   .category-chips { gap: 4px 14px; }
 }
 @media (max-width: 500px) {
-  .site-head .head-util-search, .site-head .head-util-wish, .site-head .head-util-acc { display: none; }
+  /* Search stays live below 500px (search overlay integration). Single row:
+     hamburger · centered logo · search · cart with 44px touch targets. */
+  .site-head .head-util-search { display: grid; width: 44px; height: 44px; }
+  .site-head .head-util-wish, .site-head .head-util-acc { display: none; }
   .site-head .head-utils .head-util-cart { width: 44px; height: 44px; }
   .coll-grid { gap: 14px 12px; }
   .card-info { padding-top: 10px; }
