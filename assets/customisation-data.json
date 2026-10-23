@@ -1,0 +1,232 @@
+{
+  "eligibleProductIds": [
+    31597,
+    31630,
+    31638,
+    31646,
+    31654,
+    31662
+  ],
+  "feePerUnit": 1000,
+  "maxLength": 10,
+  "placements": [
+    {
+      "id": "pl_1781159294520253",
+      "label": "Pocket Hem",
+      "image": "assets/images/customisation-pocket-hem.webp",
+      "fonts": [
+        {
+          "id": "ch_1781164631498403",
+          "label": "Freestyle Script",
+          "previewImage": "assets/images/customisation-font-freestyle-script.webp"
+        },
+        {
+          "id": "ch_1781164662178324",
+          "label": "Edwardian Script ITC",
+          "previewImage": "assets/images/customisation-font-edwardian-script-itc.webp"
+        }
+      ],
+      "colors": [
+        {
+          "id": "ch_1781164736654924",
+          "label": "off white",
+          "value": "#e7e5d6"
+        },
+        {
+          "id": "ch_1781164738876271",
+          "label": "Black",
+          "value": "#000000"
+        },
+        {
+          "id": "ch_1791541136050355",
+          "label": "White",
+          "value": "#ffffff"
+        }
+      ],
+      "steps": [
+        {
+          "id": "st_1781159414707157",
+          "label": "Add Text",
+          "type": "text",
+          "maxLength": 10,
+          "required": true
+        },
+        {
+          "id": "st_1781163044282794",
+          "label": "Select Font",
+          "type": "choice",
+          "maxLength": null,
+          "required": true
+        },
+        {
+          "id": "st_1781164728789490",
+          "label": "Select Colour",
+          "type": "color",
+          "maxLength": null,
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "pl_1790323324712485",
+      "label": "Pocket",
+      "image": "assets/images/customisation-pocket.webp",
+      "fonts": [
+        {
+          "id": "ch_1781164631498403",
+          "label": "Freestyle Script",
+          "previewImage": "assets/images/customisation-font-freestyle-script.webp"
+        },
+        {
+          "id": "ch_1781164662178324",
+          "label": "Edwardian Script ITC",
+          "previewImage": "assets/images/customisation-font-edwardian-script-itc.webp"
+        }
+      ],
+      "colors": [
+        {
+          "id": "ch_1781164736654924",
+          "label": "Navy",
+          "value": "#e7e5d6"
+        },
+        {
+          "id": "ch_1781164738876271",
+          "label": "Black",
+          "value": "#000000"
+        },
+        {
+          "id": "ch_1791541146639950",
+          "label": "White",
+          "value": "#ffffff"
+        }
+      ],
+      "steps": [
+        {
+          "id": "st_1790323324713153",
+          "label": "Add Text",
+          "type": "text",
+          "maxLength": 10,
+          "required": true
+        },
+        {
+          "id": "st_1790323324713647",
+          "label": "Select Font",
+          "type": "choice",
+          "maxLength": null,
+          "required": true
+        },
+        {
+          "id": "st_179032332471471",
+          "label": "Select Colour",
+          "type": "color",
+          "maxLength": null,
+          "required": true
+        }
+      ]
+    }
+  ],
+  "nonReturnable": false,
+  "proofMessage": "Artwork preview sent via WhatsApp or email for approval before production",
+  "sourceIssues": [
+    "Pocket colour Navy uses source value #e7e5d6; value retained without correction."
+  ],
+  "setId": 30537,
+  "setName": "pyjama set",
+  "feeType": "unit",
+  "flow": {
+    "placementLayout": "list",
+    "stepFlow": "stacked",
+    "progress": "bar",
+    "allowSecondPlacement": true,
+    "secondPlacementFee": 0,
+    "secondPlacementFeeBasis": "source set fee applies once per unit, not once per placement"
+  },
+  "button": {
+    "label": "Add Personalisation",
+    "placement": "after_form",
+    "style": "outline",
+    "animation": "lift",
+    "fullWidth": true
+  },
+  "panel": {
+    "side": "right",
+    "widthPx": 420,
+    "mobileBreakpointPx": 500,
+    "background": "#ffffff",
+    "radiusPx": 6,
+    "overlay": {
+      "color": "#1f120b",
+      "opacityPercent": 45,
+      "blurPxWhenOpen": 4
+    },
+    "animationMs": 350,
+    "headerTitle": "Add Personalisation",
+    "titleColor": "#2a1509",
+    "contentPaddingPx": 22,
+    "progress": {
+      "show": true,
+      "style": "bar",
+      "color": "#412311"
+    },
+    "placementLayout": "list",
+    "cardLayout": "grid3",
+    "cardBorder": "#8a542f",
+    "cardSelected": "#412311"
+  },
+  "messages": {
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "addToBag": "Add to Bag",
+    "close": "Close",
+    "confirmClose": "You'll lose your personalisation choices. Are you sure?",
+    "confirmYes": "Yes, close",
+    "confirmNo": "Keep editing",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "yourChoices": "Your Choices",
+    "choosePlacement": "Choose placement",
+    "choosePlacementHeading": "Where would you like it?",
+    "review": "Review",
+    "addAnother": "Add another placement",
+    "edit": "Edit",
+    "remove": "Remove",
+    "stepN": "Step %d",
+    "selectVariation": "Please choose the product options (e.g. size) before personalising.",
+    "addedToBag": "Added to your bag!",
+    "viewCart": "View Cart",
+    "checkout": "Checkout",
+    "continueShopping": "Continue Shopping",
+    "feeLabel": "Personalisation fee",
+    "freeLabel": "Free",
+    "adding": "Adding...",
+    "successNote": "Artwork preview sent via WhatsApp or email for approval before production"
+  },
+  "selection": {
+    "initialPhase": "select",
+    "minimumPlacements": 1,
+    "maximumPlacements": 2,
+    "placementRequired": true,
+    "stepsRequired": true,
+    "fontAndColourDefault": false,
+    "secondPlacementOptional": true,
+    "placementsUnique": true,
+    "reviewEditable": true,
+    "reviewRemovable": true,
+    "clientTextEmptyCheck": "empty-string",
+    "serverTextSanitizer": "sanitize_text_field"
+  },
+  "integration": {
+    "variationRequiredForVariableProducts": true,
+    "buttonHook": "woocommerce_after_add_to_cart_form",
+    "serverResolvesChoiceNamesAndPrices": true,
+    "cartLineStoresPersonalisation": true,
+    "feeAppliedByServerPriceCalculator": true
+  },
+  "currency": "LKR",
+  "source": {
+    "platform": "WordPress + WooCommerce",
+    "plugin": "wc-personalisation-panel",
+    "pluginVersion": "0.7.31",
+    "readOnly": true
+  }
+}

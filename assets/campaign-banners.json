@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "slides": [
+    {
+      "id": "ribbed-edit",
+      "title": "The Ribbed Edit",
+      "collection": "ribbed",
+      "alt": "The Ribbed Edit campaign showing five models in ribbed clothing",
+      "desktop": {
+        "source": "assets/images/2026/03/WEB-BANNER-PC-3.png",
+        "sourceWidth": 1920,
+        "sourceHeight": 700,
+        "variants": {
+          "960": {
+            "src": "assets/images/campaign/ribbed-edit-desktop-960.webp",
+            "width": 960,
+            "height": 350
+          },
+          "1440": {
+            "src": "assets/images/campaign/ribbed-edit-desktop-1440.webp",
+            "width": 1440,
+            "height": 525
+          },
+          "1920": {
+            "src": "assets/images/campaign/ribbed-edit-desktop-1920.webp",
+            "width": 1920,
+            "height": 700
+          }
+        }
+      },
+      "mobile": {
+        "source": "assets/images/2026/03/WEB-BANNER-MOBILE-2.png",
+        "sourceWidth": 1000,
+        "sourceHeight": 900,
+        "variants": {
+          "480": {
+            "src": "assets/images/campaign/ribbed-edit-mobile-480.webp",
+            "width": 480,
+            "height": 432
+          },
+          "768": {
+            "src": "assets/images/campaign/ribbed-edit-mobile-768.webp",
+            "width": 768,
+            "height": 692
+          },
+          "1000": {
+            "src": "assets/images/campaign/ribbed-edit-mobile-1000.webp",
+            "width": 1000,
+            "height": 900
+          }
+        }
+      }
+    },
+    {
+      "id": "sleep-in-style",
+      "title": "Sleep In Style",
+      "collection": "pjs",
+      "alt": "Sleep In Style campaign showing a model in pink printed pyjamas",
+      "desktop": {
+        "source": "assets/images/2026/03/WEB-BANNER-PC-2-1.jpg",
+        "sourceWidth": 1920,
+        "sourceHeight": 700,
+        "variants": {
+          "960": {
+            "src": "assets/images/campaign/sleep-in-style-desktop-960.webp",
+            "width": 960,
+            "height": 350
+          },
+          "1440": {
+            "src": "assets/images/campaign/sleep-in-style-desktop-1440.webp",
+            "width": 1440,
+            "height": 525
+          },
+          "1920": {
+            "src": "assets/images/campaign/sleep-in-style-desktop-1920.webp",
+            "width": 1920,
+            "height": 700
+          }
+        }
+      },
+      "mobile": {
+        "source": "assets/images/2026/03/WEB-BANNER-MOBILE.jpg",
+        "sourceWidth": 1000,
+        "sourceHeight": 900,
+        "variants": {
+          "480": {
+            "src": "assets/images/campaign/sleep-in-style-mobile-480.webp",
+            "width": 480,
+            "height": 432
+          },
+          "768": {
+            "src": "assets/images/campaign/sleep-in-style-mobile-768.webp",
+            "width": 768,
+            "height": 692
+          },
+          "1000": {
+            "src": "assets/images/campaign/sleep-in-style-mobile-1000.webp",
+            "width": 1000,
+            "height": 900
+          }
+        }
+      }
+    },
+    {
+      "id": "satin-scrunchies",
+      "title": "Satin Scrunchies",
+      "collection": "scrunchies",
+      "alt": "Satin Scrunchies campaign showing colourful satin scrunchies",
+      "desktop": {
+        "source": "assets/images/2026/03/WEB-BANNER-PC-1920-X-700.png",
+        "sourceWidth": 1920,
+        "sourceHeight": 700,
+        "variants": {
+          "960": {
+            "src": "assets/images/campaign/satin-scrunchies-desktop-960.webp",
+            "width": 960,
+            "height": 350
+          },
+          "1440": {
+            "src": "assets/images/campaign/satin-scrunchies-desktop-1440.webp",
+            "width": 1440,
+            "height": 525
+          },
+          "1920": {
+            "src": "assets/images/campaign/satin-scrunchies-desktop-1920.webp",
+            "width": 1920,
+            "height": 700
+          }
+        }
+      },
+      "mobile": null
+    }
+  ]
+}
