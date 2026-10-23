@@ -19,6 +19,8 @@ Date: 2026-10-23
 - PDP geometry verified for Atelier, Studio, and Maison at 375px, 768px, and 1440px viewports. All visible PDP descendants stay within client bounds; Studio mobile media/info are 320px wide inside 360px client width.
 - Fixed root cause: concept grid tracks used 340px/360px minimums and Studio media min-content sizing. Replaced with `minmax(0, 1fr)`, zeroed grid-item minimum widths, constrained media/images to available width, and removed `.pd-page` horizontal overflow masking.
 - Product layout switcher preserves `id` and `palette` while changing `concept`.
+- Size guide uses exact source chart `assets/images/2025/09/size-chart.webp` copied to `html-demo/assets/images/size-chart-30535-1536.webp` at `1536×1024`; responsive markup retains `960w` fallback and loads exact `1536×1024` asset on modal open. Chart content shows body measurements, bust, waist, low hip, how to measure, and inches. Accessible centered dialog works across all three concepts and both palettes. Desktop dialog measures `1120×810` at 1440px; mobile measures `359×846` at 375px.
+- Size guide zoom controls reach `125%` and preserve chart ratio; browser proof reports `currentSrc` `size-chart-30535-1536.webp`, natural `1536×1024`, and ratio `1.5`; Escape/backdrop close returns focus to `Size guide`, restores body scroll styles and a scrolled `500px` position, and keeps PDP variant/Add to Bag controls functional. Image-load failure shows visible retry guidance instead of blank content.
 
 ## Personalisation
 

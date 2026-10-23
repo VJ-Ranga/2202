@@ -278,6 +278,137 @@ function slugLabel(slug) {
   return catLabel(slug);
 }
 
+function buildSizeGuide(product) {
+  const titleId = `size-guide-title-${product.id}`;
+  const trigger = el('button', {
+    class: 'pd-guide-trigger', type: 'button', 'aria-haspopup': 'dialog',
+    text: 'Size guide',
+  });
+  const dialog = el('dialog', {
+    class: 'size-guide-dialog', 'aria-labelledby': titleId,
+  });
+  const close = el('button', {
+    class: 'size-guide-close', type: 'button', 'aria-label': 'Close size guide', text: '×',
+  });
+  const title = el('h2', { id: titleId, text: 'Measurements & size guide' });
+  const productName = el('p', { class: 'size-guide-product', text: product.name });
+  const units = el('p', { class: 'size-guide-units', text: 'Body measurements in inches.' });
+  const commonGuide = product.sizeGuide === 'assets/images/size-chart-30535-960.webp';
+  const chartSrc = commonGuide ? 'assets/images/size-chart-30535-960.webp' : product.sizeGuide;
+  const fullChartSrc = 'assets/images/size-chart-30535-1536.webp';
+  const chartSrcset = commonGuide
+    ? 'assets/images/size-chart-30535-960.webp 960w, assets/images/size-chart-30535-1536.webp 1536w'
+    : null;
+  const chartSizes = commonGuide ? '(max-width: 760px) calc(100vw - 32px), min(1072px, calc(100vw - 48px))' : null;
+  const fallback = el('p', {
+    class: 'size-guide-fallback', role: 'alert', hidden: true,
+    text: 'Size guide image could not load. Reload page to try again.',
+  });
+  let image = el('img', {
+    src: chartSrc,
+    ...(chartSrcset ? { srcset: chartSrcset, sizes: chartSizes } : {}),
+    alt: '2202 Love Colombo body measurement chart showing UK sizes, bust, waist, low hip, measuring instructions, and measurements in inches',
+    width: '1536', height: '1024', loading: 'lazy',
+  });
+  const handleImageError = () => { image.hidden = true; fallback.hidden = false; };
+  image.addEventListener('error', handleImageError);
+  const viewport = el('div', { class: 'size-guide-chart', tabindex: '0', role: 'region', 'aria-label': 'Scrollable size chart' }, image, fallback);
+  let zoom = 1;
+  const zoomStatus = el('span', { class: 'size-guide-zoom-status', 'aria-live': 'polite', text: '100%' });
+  const setZoom = (next) => {
+    zoom = Math.min(3, Math.max(1, next));
+    image.style.width = zoom === 1 ? '100%' : `${zoom * 100}%`;
+    zoomStatus.textContent = `${Math.round(zoom * 100)}%`;
+  };
+  const zoomOut = el('button', { class: 'size-guide-control', type: 'button', 'aria-label': 'Zoom out', text: '−', onclick: () => setZoom(zoom - 0.25) });
+  const zoomIn = el('button', { class: 'size-guide-control', type: 'button', 'aria-label': 'Zoom in', text: '+', onclick: () => setZoom(zoom + 0.25) });
+  const zoomReset = el('button', { class: 'size-guide-reset', type: 'button', text: 'Reset zoom', onclick: () => { setZoom(1); viewport.scrollTo({ left: 0, top: 0, behavior: 'auto' }); } });
+  const controls = el('div', { class: 'size-guide-controls', 'aria-label': 'Chart zoom controls' }, zoomOut, zoomStatus, zoomIn, zoomReset);
+  const header = el('header', { class: 'size-guide-header' }, el('div', {}, title, productName, units), close);
+  dialog.append(header, controls, viewport);
+
+  let previousFocus = null;
+  let previousScrollY = 0;
+  let previousBodyStyles = null;
+  let previousScrollBehavior = '';
+  let isOpen = false;
+  const focusables = () => [...dialog.querySelectorAll('button, [tabindex="0"]')].filter((node) => !node.disabled && !node.hidden);
+  const restore = () => {
+    if (!isOpen) return;
+    isOpen = false;
+    if (previousBodyStyles) {
+      document.body.style.overflow = previousBodyStyles.overflow;
+      document.body.style.position = previousBodyStyles.position;
+      document.body.style.top = previousBodyStyles.top;
+      document.body.style.width = previousBodyStyles.width;
+    }
+    const restoreScrollY = previousScrollY;
+    document.documentElement.style.scrollBehavior = 'auto';
+    previousFocus?.focus?.({ preventScroll: true });
+    const restoreScroll = () => {
+      window.scrollTo(0, restoreScrollY);
+      if (document.scrollingElement) document.scrollingElement.scrollTop = restoreScrollY;
+    };
+    requestAnimationFrame(restoreScroll);
+    setTimeout(() => {
+      restoreScroll();
+      document.documentElement.style.scrollBehavior = previousScrollBehavior;
+    }, 50);
+  };
+  const closeGuide = () => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    if (dialog.open) dialog.close(); else restore();
+  };
+  const openGuide = () => {
+    if (document.querySelector('dialog[open]')) return;
+    previousFocus = document.activeElement;
+    previousScrollY = window.scrollY;
+    previousScrollBehavior = document.documentElement.style.scrollBehavior;
+    previousBodyStyles = {
+      overflow: document.body.style.overflow,
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+    };
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${previousScrollY}px`;
+    document.body.style.width = '100%';
+    isOpen = true;
+    setZoom(1);
+    image.loading = 'eager';
+    if (commonGuide) {
+      const highImage = new Image();
+      highImage.width = 1536;
+      highImage.height = 1024;
+      highImage.alt = image.alt;
+      highImage.className = image.className;
+      highImage.loading = 'eager';
+      highImage.src = fullChartSrc;
+      highImage.addEventListener('error', handleImageError);
+      image.replaceWith(highImage);
+      image = highImage;
+    }
+    dialog.showModal();
+    close.focus();
+  };
+  trigger.addEventListener('click', openGuide);
+  close.addEventListener('click', closeGuide);
+  dialog.addEventListener('cancel', (event) => { event.preventDefault(); closeGuide(); });
+  dialog.addEventListener('click', (event) => { if (event.target === dialog) closeGuide(); });
+  dialog.addEventListener('close', restore);
+  dialog.addEventListener('keydown', (event) => {
+    if (event.key !== 'Tab') return;
+    const items = focusables();
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+  return el('section', { class: 'pd-guide', 'aria-label': 'Size guide' }, trigger, dialog);
+}
+
 async function renderProduct() {
   const QS = freshQS();
   const id = Number(QS.get('id'));
@@ -432,11 +563,7 @@ async function renderProduct() {
     info.append(el('p', { class: 'pd-stock-note', text: 'One size — add straight to your bag.' }));
   }
 
-  if (p.sizeGuide) {
-    const guide = el('details', { class: 'pd-guide' }, el('summary', { text: 'Size guide — body measurements' }));
-    guide.append(el('img', { src: p.sizeGuide, alt: 'Size chart with body measurements', loading: 'lazy' }));
-    info.append(guide);
-  }
+  if (p.sizeGuide) info.append(buildSizeGuide(p));
 
 
   const qtyVal = el('span', { class: 'qty-value', text: '1' });
