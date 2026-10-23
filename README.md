@@ -6,7 +6,15 @@ Client-review HTML storefront for the planned migration from WordPress/WooCommer
 
 [Open the client presentation](https://vj-ranga.github.io/2202/)
 
-GitHub Pages publishes the contents of `shopify-theme/html-demo/`. Changes to that folder on `main` deploy automatically through [the Pages workflow](.github/workflows/pages.yml). Only the runnable storefront is deployed; project documentation, source exports, and local WordPress backups are not part of the published site.
+GitHub Pages serves the `gh-pages` branch, which contains only `shopify-theme/html-demo/`. The complete project remains on `main` and runs locally. Documentation, source exports, and local WordPress backups are not part of the published site. The `.nojekyll` file keeps the published demo a plain static website.
+
+After committing and pushing demo changes to `main`, publish the HTML-only branch from the repository root:
+
+```bash
+bash shopify-theme/scripts/publish-pages.sh
+```
+
+Publishing uses a Git subtree push and GitHub Pages branch publishing, without a custom GitHub Actions workflow.
 
 ## Run the preview
 
