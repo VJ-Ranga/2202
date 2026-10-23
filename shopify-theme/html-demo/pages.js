@@ -43,6 +43,7 @@ import {
   cartAdjust,
   persistCart,
   syncBadges,
+  openCartDrawer,
   toast,
   catLabel,
 } from './core.js';
@@ -588,7 +589,7 @@ async function renderProduct() {
     addBtn.setAttribute('aria-disabled', 'true');
     addBtn.textContent = 'Sold out — not buyable';
   } else {
-    addBtn.addEventListener('click', () => {
+    addBtn.addEventListener('click', async () => {
       try {
         if ((optionLabels.length > 0) && !selectedSize) {
           throw new Error('Select a size before adding to bag.');
@@ -600,7 +601,12 @@ async function renderProduct() {
         toast(`Added to bag — ${p.name}${selectedSize ? ` · ${selectedSize}` : ''}${persona ? ' · personalised' : ''}`);
         addBtn.textContent = 'Added ✓';
         setTimeout(() => { addBtn.textContent = 'Add to bag'; }, 1800);
+        /* Standard retail: the just-added item shows immediately in the drawer
+           from the same committed central state (never an imported stale copy). */
+        await openCartDrawer(addBtn);
       } catch (e2) {
+        /* Invalid size or out-of-stock guard: error stays visible and the
+           drawer never opens. */
         err.textContent = e2.message.replace(/^(UNKNOWN_SIZE|SIZE_UNAVAILABLE|PRICE_MISSING|INVALID_QTY):\s*/, '');
       }
     });
@@ -646,8 +652,17 @@ async function renderProduct() {
 
 function renderCart() {
   document.title = `Cart · 2202 Love Colombo`;
+  if (typeof window !== 'undefined') window.__rerenderCart = () => renderCart();
   const out = el('section', { class: 'page-body cart-page' });
   out.append(crumbTrail(null), pageTitle(`Cart · ${cartCount(state.cart)} ${cartCount(state.cart) === 1 ? 'item' : 'items'}`));
+  /* Arrived from the cart drawer checkout handoff: reuse the honest preview
+     boundary instead of a dead end. */
+  if (freshQS().get('checkout') === 'preview') {
+    out.append(el('p', {
+      class: 'cart-note cart-preview-checkout-notice', role: 'status',
+      text: 'Preview: checkout opens at the live store — order placement is unavailable in this HTML preview.',
+    }));
+  }
   if (!state.cart.length) {
     out.append(el('div', { class: 'cart-empty' },
       el('h3', { text: 'Your cart is empty' }),
@@ -691,7 +706,7 @@ function renderCart() {
               ? `Increase quantity of ${line.name} (maximum ${MAX_QUANTITY} reached)`
               : `Increase quantity of ${line.name} (maximum ${MAX_QUANTITY})`,
             text: '+',
-            disabled: line.qty >= MAX_QUANTITY,
+            disabled: line.qty >= MAX_QUANTITY || null, /* el() boolean-safe */
             onclick: () => { cartAdjust(i, 1); renderCart(); },
           }),
         ),
