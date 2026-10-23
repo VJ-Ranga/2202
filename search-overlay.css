@@ -2,34 +2,38 @@
  * search-overlay.css — scoped styles for the standalone search overlay
  * (search-overlay.mjs). Every selector is namespaced (.spo-*) or scoped to
  * dialog.spo-overlay, so it never leaks into core/pages/app styles.
- * Local fonts only: var(--font-body) inherited from the page, no @font-face,
- * no external requests. Tokens fall back to brand values when the overlay is
- * previewed without styles.css.
+ * Full-screen white surface: width:100vw × 100dvh, edge-to-edge, palette-
+ * independent (literal #fff — never beige-tinted by a palette). Local fonts
+ * only: var(--font-display)/var(--font-body) inherited from the page, no
+ * @font-face, no external requests.
  */
 
 /* ---------- native <dialog> guards ----------
    The overlay must render as a flex panel only while [open]; while closed it
    must stay display:none even though its open state sets display:flex (this
    explicit :not([open]) rule is the closed-state guard, and its specificity
-   beats any display rule from other stylesheets). */
+   beats any display rule from other stylesheets).
+   top:0 + bottom:auto + margin:0 neutralises the UA dialog:modal insets so the
+   surface covers the entire viewport on every palette/concept. */
 
 html dialog.spo-overlay {
   position: fixed;
-  top: 16px;
+  top: 0;
   right: 0;
-  bottom: auto; /* neutralise UA dialog:modal inset-block-end so top:16 is exact */
+  bottom: auto;
   left: 0;
-  margin: 0 auto; /* inline auto = horizontal centring; block 0 = pinned to top */
-  width: min(1200px, calc(100vw - 32px));
-  height: min(90dvh, 850px);
+  margin: 0;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100dvh;
   max-width: none;
   max-height: none;
   padding: 0;
   border: 0;
   overflow: hidden;
-  background: var(--paper, #ffffff);
-  color: var(--ink-2, #1a1a1a);
-  box-shadow: var(--shadow, 0 18px 48px rgba(0, 0, 0, 0.18));
+  background: #ffffff; /* always white — never var(--paper): palettes may tint it */
+  color: #1a1a1a;
+  box-shadow: none;
 }
 
 html dialog.spo-overlay[open] {
@@ -41,10 +45,10 @@ html dialog.spo-overlay:not([open]) {
   display: none;
 }
 
+/* Full-screen surface covers the viewport; backdrop stays a solid dark
+   fallback only (no blur — the panel never lets it show through). */
 html dialog.spo-overlay::backdrop {
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 html dialog.spo-overlay * { box-sizing: border-box; }
@@ -56,28 +60,96 @@ html dialog.spo-overlay * { box-sizing: border-box; }
   min-height: 0;
 }
 
-/* ---------- header ---------- */
+/* ---------- header: field across the top, close X outside to the right ---------- */
 
 .spo-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 26px clamp(20px, 4vw, 48px) 6px;
+  gap: 12px;
   flex: none;
+  padding: 24px;
 }
 
-.spo-title {
-  margin: 0;
-  font-family: var(--font-body, 'Barlow', 'Helvetica Neue', Arial, sans-serif);
-  font-size: clamp(24px, 2vw, 28px); /* 24 mobile → 28 desktop */
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  color: var(--ink, #000000);
+.spo-form {
+  flex: 1;
+  min-width: 0;
 }
 
-/* 44×44 icon hit targets: close + clear */
+/* visually-hidden helper (self-contained — no reliance on global utilities) */
+.spo-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.spo-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 6px 0 16px;
+  border: 1px solid #d9d9d9; /* thin grey border */
+  border-radius: 0; /* squared: a rounded 1px box antialiases its right edge into a false × at small widths */
+  background: #ffffff;
+}
+
+/* one black border on the parent — no double heavy rectangle */
+.spo-field:focus-within {
+  border-color: #000000;
+}
+
+.spo-field-icon {
+  display: flex;
+  flex: none;
+  color: #767676;
+}
+
+.spo-field-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.spo-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #000000;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.spo-input::placeholder { color: #767676; opacity: 1; }
+
+/* parent :focus-within owns the black border; input never draws its own */
+html dialog.spo-overlay .spo-input:focus,
+html dialog.spo-overlay .spo-input:focus-visible {
+  outline: none;
+}
+
+/* native Esc-clear affordance hidden: inline Clear button owns that job.
+   Scoped to the input with enough specificity, and appearance stripped, or
+   Chromium keeps painting the field's own ×. */
+html dialog.spo-overlay .spo-input::-webkit-search-cancel-button,
+html dialog.spo-overlay .spo-input::-webkit-search-decoration {
+  display: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* 44×44 icon hit targets: clear (inside field) + close (outside field) */
 .spo-icon {
   display: inline-flex;
   align-items: center;
@@ -85,135 +157,128 @@ html dialog.spo-overlay * { box-sizing: border-box; }
   flex: none;
   width: 44px;
   height: 44px;
-  margin: -6px -8px -6px 0;
   border-radius: 50%;
-  color: var(--ink, #000000);
+  color: #000000;
   background: transparent;
   transition: background 0.15s var(--ease, ease), color 0.15s var(--ease, ease);
 }
 
+.spo-icon[hidden] { display: none; } /* beat display:inline-flex so [hidden] wins */
+
 .spo-icon:hover { background: rgba(0, 0, 0, 0.06); }
 .spo-icon svg { width: 20px; height: 20px; }
-
 .spo-clear { margin: 0; }
 
-/* ---------- field ---------- */
-
-.spo-form {
-  flex: none;
-  padding: 10px clamp(20px, 4vw, 48px) 0;
-}
-
-.spo-label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--grey, #6e6e6e); /* visible label — not placeholder-only */
-}
-
-.spo-field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  border-bottom: 2px solid var(--ink, #000000); /* black underline */
-}
-
-.spo-input {
-  flex: 1;
-  min-width: 0;
-  min-height: 44px;
-  padding: 6px 0;
-  border: 0;
-  background: transparent;
-  font-family: inherit;
-  font-size: 22px; /* desktop */
-  line-height: 1.3;
-  color: var(--ink, #000000);
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.spo-input::placeholder { color: var(--grey, #6e6e6e); opacity: 1; }
-.spo-input:focus { outline: none; }
-.spo-input:focus-visible { outline: 2px solid var(--ink, #000000); outline-offset: 4px; }
-
-/* native Esc-clear affordance hidden: inline Clear button owns that job */
-.spo-input::-webkit-search-cancel-button,
-.spo-input::-webkit-search-decoration { display: none; -webkit-appearance: none; }
-
-/* ---------- live count ---------- */
-
-.spo-count {
-  flex: none;
-  min-height: 20px;
-  padding: 10px clamp(20px, 4vw, 48px) 0;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  color: var(--grey, #6e6e6e);
-}
-
-/* ---------- scrollable body ---------- */
+/* ---------- body: fixed left column + independently scrolling results ---------- */
 
 .spo-body {
   flex: 1;
   min-height: 0;
+  display: grid;
+  grid-template-columns: clamp(220px, 22%, 380px) minmax(0, 1fr);
+  gap: 40px;
+  padding: 8px 24px 24px;
+  overflow: hidden;
+}
+
+.spo-side {
+  min-width: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 4px clamp(20px, 4vw, 48px) 36px;
+}
+
+.spo-side-title {
+  margin: 10px 0 14px;
+  font-family: var(--font-display, 'Bodoni Moda', Georgia, 'Times New Roman', serif);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6e6e6e;
+}
+
+.spo-side-links {
+  display: flex;
+  flex-direction: column;
+}
+
+/* plain text links — no pills, no boxes */
+.spo-side-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #000000;
+  text-decoration: none;
+}
+
+.spo-side-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Sale keeps its own quiet accent (user-requested emphasis) */
+.spo-side-link--sale { color: #b32624; }
+
+.spo-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.spo-main-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex: none;
+  margin-bottom: 14px;
+}
+
+.spo-main-title {
+  margin: 0;
+  font-family: var(--font-display, 'Bodoni Moda', Georgia, 'Times New Roman', serif);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6e6e6e;
+}
+
+.spo-count {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #6e6e6e;
+  font-variant-numeric: tabular-nums;
+}
+
+/* right column scrolls independently — header + sidebar stay put */
+.spo-results {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 32px;
   -webkit-overflow-scrolling: touch;
 }
 
-.spo-section-title {
-  margin: 22px 0 12px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--grey, #6e6e6e);
-}
-
-.spo-section-title:first-child { margin-top: 6px; }
-
-/* category suggestion chips — real navigation, all ≥44px */
-.spo-cats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.spo-cat {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 20px;
-  border: 1px solid var(--line-strong, #000000);
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ink, #000000);
-  text-decoration: none;
-  transition: background 0.15s var(--ease, ease), color 0.15s var(--ease, ease);
-}
-
-.spo-cat:hover { background: var(--ink, #000000); color: #ffffff; }
-
-/* ---------- product cards ---------- */
+/* ---------- product cards: real photos, no boxes/borders/rounded ---------- */
 
 .spo-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 6px;
 }
 
 .spo-card {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 6px;
   min-height: 44px;
+  padding-bottom: 14px;
   color: inherit;
   text-decoration: none;
 }
@@ -227,33 +292,49 @@ html dialog.spo-overlay * { box-sizing: border-box; }
 }
 
 .spo-card-name {
+  font-family: var(--font-display, 'Bodoni Moda', Georgia, 'Times New Roman', serif);
   font-size: 16px;
-  font-weight: 500;
-  line-height: 1.3;
-  color: var(--ink, #000000);
+  font-weight: 400;
+  line-height: 1.3; /* 20–22px */
+  color: #000000;
   overflow-wrap: anywhere;
 }
 
 .spo-card-price {
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.3;
-  color: var(--ink-2, #1a1a1a);
+  color: #1a1a1a;
   font-variant-numeric: tabular-nums;
 }
 
-.spo-card-price s { margin-right: 8px; color: var(--grey, #6e6e6e); font-size: 14px; }
+.spo-card-price s {
+  margin-right: 6px;
+  color: #8a8a8a;
+  font-size: 13px;
+}
 
-.spo-card:hover .spo-card-name { text-decoration: underline; text-underline-offset: 3px; }
+/* italic material line — only present when the source carries a real Fabric
+   line; sits between name and price at a legible 14px */
+.spo-card-mat {
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.35;
+  color: #6e6e6e;
+}
+
+.spo-card:hover .spo-card-name {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 /* view-all / browse-all links — full-size hit area */
 .spo-viewall {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  margin-top: 16px;
+  margin-top: 8px;
   font-size: 15px;
-  font-weight: 500;
-  color: var(--ink, #000000);
+  color: #000000;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -265,14 +346,15 @@ html dialog.spo-overlay * { box-sizing: border-box; }
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  padding-top: 10px;
+  padding-top: 4px;
 }
 
 .spo-empty h3 {
   margin: 0;
-  font-size: 19px;
-  font-weight: 500;
-  color: var(--ink, #000000);
+  font-family: var(--font-display, 'Bodoni Moda', Georgia, 'Times New Roman', serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: #000000;
   overflow-wrap: anywhere;
 }
 
@@ -281,12 +363,8 @@ html dialog.spo-overlay * { box-sizing: border-box; }
   max-width: 52ch;
   font-size: 14.5px;
   line-height: 1.6;
-  color: var(--grey, #6e6e6e);
+  color: #6e6e6e;
 }
-
-.spo-empty .spo-viewall { margin-top: 4px; }
-
-.spo-body .spo-cats { margin-top: 18px; }
 
 /* ---------- focus (self-contained even without styles.css) ---------- */
 
@@ -295,51 +373,87 @@ html dialog.spo-overlay :focus-visible {
   outline-offset: 3px;
 }
 
-/* ---------- responsive: 4 → 3 columns → mobile list ---------- */
-
-@media (max-width: 980px) {
-  .spo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
+/* ---------- responsive ---------- */
 
 @media (max-width: 760px) {
-  html dialog.spo-overlay {
-    top: 0;
-    right: 0;
-    left: 0;
-    margin: 0;
-    width: 100vw;
-    height: 100dvh; /* full-screen on mobile */
-    max-height: none;
+  .spo-head {
+    gap: 8px;
+    padding: 16px;
   }
 
-  .spo-head { padding-top: 18px; }
-  .spo-title { font-size: 24px; }
-  .spo-input { font-size: 18px; }
+  .spo-field {
+    height: 52px;
+    padding: 0 4px 0 12px;
+  }
 
-  .spo-grid { grid-template-columns: 1fr; gap: 0; }
+  .spo-input { font-size: 16px; }
 
-  /* list rows: thumbnail 72×90, never overflows */
-  .spo-card {
+  .spo-body {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 0 16px 16px;
+  }
+
+  /* suggested searches: plain horizontal text row, compact scroll, 44px hits */
+  .spo-side {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+  }
+
+  .spo-side-title {
+    margin: 6px 0 2px;
+    font-size: 13px;
+  }
+
+  .spo-side-links {
     flex-direction: row;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--line, #e5e5e5);
+    gap: 20px;
+    width: max-content;
   }
 
-  .spo-card img {
-    flex: none;
-    width: 72px;
-    height: 90px;
-    aspect-ratio: auto;
+  .spo-side-link {
+    font-size: 15px;
+    white-space: nowrap;
   }
 
-  .spo-card-name,
-  .spo-card-price { font-size: 16px; }
+  .spo-main-head { margin-bottom: 10px; }
+
+  /* large 2-up photo grid (~160×200 on a 375 viewport) */
+  .spo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 12px;
+  }
+
+  .spo-card {
+    gap: 7px;
+    padding-bottom: 18px;
+  }
+
+  .spo-card-name {
+    font-size: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .spo-card-price {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+}
+
+/* very narrow (≤359px, e.g. 320): one product per row, never cramped */
+@media (max-width: 359px) {
+  .spo-grid {
+    grid-template-columns: 1fr;
+    gap: 0 0;
+  }
 }
 
 /* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .spo-icon, .spo-cat, .spo-card-name { transition: none; }
+  .spo-icon { transition: none; }
 }

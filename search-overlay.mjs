@@ -58,6 +58,31 @@ export function pickNewArrivals(products, count = NEW_ARRIVALS) {
 }
 
 /**
+ * Curated "You may like" rail: six real source-id picks, in this order.
+ * Missing ids fall back to the newest real products (pickNewArrivals order);
+ * entries are always references into the catalog — never invented.
+ */
+export const RECOMMENDED_IDS = [31662, 31597, 30895, 31845, 31787, 31030];
+
+export function pickRecommendations(products, ids = RECOMMENDED_IDS, count = NEW_ARRIVALS) {
+  if (!Array.isArray(products)) return [];
+  const byId = new Map(products.filter((p) => p && typeof p.id === 'number').map((p) => [p.id, p]));
+  const picked = [];
+  const seen = new Set();
+  for (const id of ids) {
+    const hit = byId.get(id);
+    if (hit && !seen.has(hit.id)) { picked.push(hit); seen.add(hit.id); }
+  }
+  if (picked.length < count) {
+    for (const hit of pickNewArrivals(products)) {
+      if (picked.length >= count) break;
+      if (!seen.has(hit.id)) { picked.push(hit); seen.add(hit.id); }
+    }
+  }
+  return picked.slice(0, count);
+}
+
+/**
  * Live matches over the full catalog via store's searchProducts (name +
  * category), capped so a broad query never dumps all 116 products into the
  * overlay. total keeps the real count for "View all N results".
@@ -67,6 +92,28 @@ export function pickResults(products, query, max = MAX_RESULTS) {
   const matches = searchProducts(Array.isArray(products) ? products : [], query);
   const cap = Number.isFinite(max) && max > 0 ? Math.floor(max) : MAX_RESULTS;
   return { total: matches.length, shown: matches.slice(0, cap) };
+}
+
+/**
+ * Italic material line for a card — only when the source text carries a real
+ * Fabric line: `Fabric: value`, a `Fabric` section header with its next line,
+ * or a standalone material bullet ending in "fabric". Mid-sentence prose never
+ * qualifies; the value is returned verbatim (never invented).
+ * @returns {string|null}
+ */
+export function materialLine(product) {
+  if (!product || typeof product !== 'object') return null;
+  const text = `${typeof product.fullDescription === 'string' ? product.fullDescription : ''}\n${typeof product.description === 'string' ? product.description : ''}`;
+  const colon = text.match(/^\s*Fabric\s*[:\-–—]\s*([^\n]+)$/mi);
+  if (colon) return colon[1].trim();
+  const header = text.match(/^\s*Fabric[ \t]*\n+([^\n]+)/mi);
+  if (header) {
+    const value = header[1].trim();
+    if (value) return value;
+  }
+  const bullet = text.match(/^\s*([A-Za-z0-9%][^.\n]{0,60}?\s+fabric)\s*$/mi);
+  if (bullet) return bullet[1].trim();
+  return null;
 }
 
 /** Honest zero-state copy: names the query, says what to try, offers browsing. */
@@ -161,6 +208,7 @@ function el(tag, props = {}, ...kids) {
 }
 
 const ICON_CLOSE = ['M6 6l12 12', 'M18 6L6 18'];
+const ICON_SEARCH = ['M21 21l-4.35-4.35', 'M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z'];
 
 /* ---------- factory ---------- */
 
@@ -184,7 +232,9 @@ export async function createSearchOverlay({ getProducts, getNavigation, urls } =
   let input = null;
   let clearBtn = null;
   let countEl = null;
-  let bodyEl = null;
+  let sideEl = null;
+  let mainTitle = null;
+  let resultsEl = null;
   let form = null;
   let invoker = null;
   let bodyLock = null;
@@ -208,6 +258,7 @@ export async function createSearchOverlay({ getProducts, getNavigation, urls } =
       alt: String(p.image?.alt ?? p.name),
       loading: 'lazy',
     });
+    const material = materialLine(p);
     return el('a', {
       class: 'spo-card',
       href: urls.product(p.id),
@@ -215,31 +266,52 @@ export async function createSearchOverlay({ getProducts, getNavigation, urls } =
     },
     media,
     el('span', { class: 'spo-card-name', text: String(p.name) }),
+    material ? el('span', { class: 'spo-card-mat', text: material }) : null, /* name -> fabric -> price */
     priceWrap,
     );
   }
 
-  function categoryLinks() {
+  function renderSide() {
+    sideEl.replaceChildren();
     const nav = pickSuggestions(getNavigation());
-    if (!nav.length) return null;
-    return el('div', { class: 'spo-cats' },
-      nav.map((s) => el('a', { class: 'spo-cat', href: urls.collection(s.slug), text: s.label })));
+    if (!nav.length) return;
+    /* Suggestions run as live searches (real label text, never the slug):
+       unmodified primary click applies the query in the overlay; Ctrl/Meta/
+       Shift/Alt or a middle click keep the native full search-page href. */
+    const links = nav.map((s) => {
+      const a = el('a', {
+        class: s.slug === 'sale' ? 'spo-side-link spo-side-link--sale' : 'spo-side-link',
+        href: urls.search(s.label),
+        text: s.label,
+      });
+      a.addEventListener('click', (e) => {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey
+          || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        applyQuery(s.label);
+        input.focus();
+      });
+      return a;
+    });
+    sideEl.append(
+      el('h3', { class: 'spo-side-title', text: 'Suggested searches' }),
+      el('nav', { class: 'spo-side-links', 'aria-label': 'Suggested searches' }, links),
+    );
   }
 
   function renderDefault() {
-    const cats = categoryLinks();
-    if (cats) bodyEl.append(el('h3', { class: 'spo-section-title', text: 'Shop categories' }), cats);
-    const arrivals = pickNewArrivals(getProducts());
-    if (arrivals.length) {
-      bodyEl.append(
-        el('h3', { class: 'spo-section-title', text: 'New arrivals' }),
-        el('div', { class: 'spo-grid' }, arrivals.map(card)),
-      );
-    }
+    renderSide();
+    mainTitle.textContent = 'You may like';
+    countEl.textContent = '';
+    const picks = pickRecommendations(getProducts());
+    resultsEl.replaceChildren(...(picks.length ? [el('div', { class: 'spo-grid' }, picks.map(card))] : []));
   }
 
   function renderResults(shown, total) {
-    bodyEl.append(
+    renderSide();
+    mainTitle.textContent = 'Search results';
+    countEl.textContent = `${total} result${total === 1 ? '' : 's'}`;
+    resultsEl.replaceChildren(
       el('div', { class: 'spo-grid' }, shown.map(card)),
       el('a', {
         class: 'spo-viewall',
@@ -250,28 +322,26 @@ export async function createSearchOverlay({ getProducts, getNavigation, urls } =
   }
 
   function renderNoResults(query) {
+    renderSide();
+    mainTitle.textContent = 'Search results';
+    countEl.textContent = 'No results';
     const copy = noResultsCopy(query);
-    bodyEl.append(el('div', { class: 'spo-empty' },
+    resultsEl.replaceChildren(el('div', { class: 'spo-empty' },
       el('h3', { text: copy.headline }),
       el('p', { text: copy.hint }),
       el('a', { class: 'spo-viewall', href: buildSearchHref(urls, ''), text: copy.browseLabel }),
     ));
-    const cats = categoryLinks();
-    if (cats) bodyEl.append(cats);
   }
 
   function render() {
     const raw = input.value;
     const query = raw.trim();
     clearBtn.hidden = raw.length === 0;
-    bodyEl.replaceChildren();
     if (!query) {
-      countEl.textContent = '';
       renderDefault();
       return;
     }
     const { total, shown } = pickResults(getProducts(), query);
-    countEl.textContent = total ? `${total} result${total === 1 ? '' : 's'}` : 'No results';
     if (!total) renderNoResults(query);
     else renderResults(shown, total);
   }
@@ -358,14 +428,20 @@ export async function createSearchOverlay({ getProducts, getNavigation, urls } =
   function buildDom() {
     dialog = el('dialog', { class: 'spo-overlay', id: 'spo-search-overlay', 'aria-labelledby': 'spo-search-title' });
 
+    /* hidden dialog title — no big question heading on screen */
+    dialog.append(el('h2', { class: 'spo-sr', id: 'spo-search-title', text: 'Search' }));
+
     const closeBtn = el('button', {
-      class: 'spo-icon', type: 'button', 'aria-label': 'Close search', onclick: () => close(),
+      class: 'spo-icon spo-close', type: 'button', 'aria-label': 'Close search', onclick: () => close(),
     });
     closeBtn.append(svgIcon(ICON_CLOSE));
 
+    const fieldIcon = el('span', { class: 'spo-field-icon' });
+    fieldIcon.append(svgIcon(ICON_SEARCH));
+
     input = el('input', {
-      class: 'spo-input', id: 'spo-search-input', type: 'search', name: 'q',
-      placeholder: 'Search products', autocomplete: 'off', autocapitalize: 'off',
+      class: 'spo-input', id: 'spo-search-input', type: 'text', name: 'q',
+      placeholder: 'Search', autocomplete: 'off', autocapitalize: 'off',
       enterkeyhint: 'search', spellcheck: 'false', 'aria-describedby': 'spo-search-count',
     });
     clearBtn = el('button', {
@@ -374,9 +450,10 @@ export async function createSearchOverlay({ getProducts, getNavigation, urls } =
     });
     clearBtn.append(svgIcon(ICON_CLOSE));
 
+    /* field is the bordered search bar; close X sits outside it to the right */
     form = el('form', { class: 'spo-form', role: 'search', 'aria-label': 'Product search' },
-      el('label', { class: 'spo-label', for: 'spo-search-input', text: 'Search products' }),
-      el('div', { class: 'spo-field' }, input, clearBtn),
+      el('label', { class: 'spo-sr', for: 'spo-search-input', text: 'Search products' }),
+      el('div', { class: 'spo-field' }, fieldIcon, input, clearBtn),
     );
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -386,15 +463,16 @@ export async function createSearchOverlay({ getProducts, getNavigation, urls } =
     });
 
     countEl = el('p', { class: 'spo-count', id: 'spo-search-count', role: 'status', 'aria-live': 'polite' });
-    bodyEl = el('div', { class: 'spo-body', id: 'spo-search-body' });
+    sideEl = el('aside', { class: 'spo-side' });
+    mainTitle = el('h3', { class: 'spo-main-title', text: 'You may like' });
+    resultsEl = el('div', { class: 'spo-results', id: 'spo-search-body' });
 
     dialog.append(el('div', { class: 'spo-panel' },
-      el('header', { class: 'spo-head' },
-        el('h2', { class: 'spo-title', id: 'spo-search-title', text: 'What are you looking for?' }),
-        closeBtn),
-      form,
-      countEl,
-      bodyEl,
+      el('header', { class: 'spo-head' }, form, closeBtn),
+      el('div', { class: 'spo-body' }, sideEl,
+        el('section', { class: 'spo-main' },
+          el('div', { class: 'spo-main-head' }, mainTitle, countEl),
+          resultsEl)),
     ));
 
     input.addEventListener('input', () => {
