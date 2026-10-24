@@ -1,0 +1,148 @@
+/* Love Colombo's image-led direction, informed by the Mimosa storefront study. */
+body[data-concept='atelier'] .atelier-eyebrow {
+  font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+}
+body[data-concept='atelier'] .atelier-campaign {
+  position: relative; height: calc(100svh - 36px); min-height: 600px; overflow: hidden;
+}
+.atelier-campaign-slide { display: none; position: absolute; inset: 0; background: var(--campaign-background); }
+.atelier-campaign-slide[data-active='true'] { display: block; }
+.atelier-campaign-photo { position: absolute; inset: 78px 0 0 38%; }
+.atelier-campaign-photo img { width: 100%; height: 100%; object-fit: contain; object-position: 50% 0; }
+.atelier-campaign-copy { position: absolute; z-index: 1; left: 6%; top: 40%; width: 40%; }
+.atelier-campaign-copy h1, .atelier-campaign-copy h2 {
+  font-family: var(--font-display); font-weight: 400; font-size: clamp(56px, 7.8vw, 124px);
+  line-height: .98; letter-spacing: -.04em; margin: 16px 0 0; color: #171717;
+}
+.atelier-campaign-cta, .atelier-outline-link {
+  display: inline-flex; justify-content: center; align-items: center; min-height: 48px;
+  padding: 12px 28px; border: 1px solid currentColor; color: inherit; text-decoration: none;
+  font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+}
+.atelier-campaign-cta { position: absolute; left: 50%; bottom: 80px; transform: translateX(-50%); background: white; color: #111; border-color: white; min-width: 154px; }
+.atelier-campaign-controls { position: absolute; z-index: 3; right: 24px; bottom: 22px; display: flex; align-items: center; gap: 2px; color: #111; }
+.atelier-slider-button { width: 44px; height: 44px; display: grid; place-items: center; }
+.atelier-slider-button svg { width: 16px; height: 16px; }
+.atelier-campaign-counter { padding: 0 8px; font-size: 12px; }
+
+body[data-concept='atelier'][data-page='home'] .site-chrome { height: 36px; }
+body[data-concept='atelier'][data-page='home'] .site-head {
+  position: absolute; top: 36px; left: 0; right: 0; background: transparent; color: #171717;
+  box-shadow: none; height: 78px; backdrop-filter: none;
+}
+body[data-concept='atelier'][data-page='home'] .site-head.is-stuck { position: fixed; top: 0; background: #fff; box-shadow: 0 1px 0 var(--line); }
+body[data-concept='atelier'] .head-start .burger { width: 92px; flex-basis: 92px; display: flex; align-items: center; gap: 8px; }
+body[data-concept='atelier'] .header-menu-label { position: static !important; width: auto; height: auto; clip: auto; overflow: visible; margin: 0; font-size: 13px; }
+body[data-concept='atelier'] .site-head .head-nav .nav-item:not(:last-child) { display: none; }
+
+.atelier-arrivals { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 12px) / 4); gap: 4px; overflow-x: auto; padding: 24px 0 36px; scroll-snap-type: x proximity; }
+.atelier-arrivals > * { min-width: 0; scroll-snap-align: start; }
+.atelier-arrivals-intro { background: #282828; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 32px; text-align: center; }
+.atelier-arrivals-intro h2 { font-size: clamp(26px, 2.8vw, 42px); line-height: 1.1; font-weight: 400; text-transform: uppercase; }
+body[data-concept='atelier'] .atelier-arrivals .card-media { aspect-ratio: 4 / 5; }
+body[data-concept='atelier'] .card-name { font-size: 15px; text-transform: uppercase; letter-spacing: .025em; line-height: 1.5; }
+body[data-concept='atelier'] .card-price { font-size: 15px; font-weight: 400; }
+body[data-concept='atelier'] .card-cat { display: none; }
+body[data-concept='atelier'] .card-info { padding: 12px 12px 0; }
+.atelier-category-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.atelier-category { display: block; position: relative; aspect-ratio: 4 / 5; overflow: hidden; color: #111; text-decoration: none; }
+.atelier-category img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.atelier-category:hover img { transform: scale(1.025); }
+.atelier-category-name { position: absolute; left: 24px; top: 24px; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+.atelier-category-cta { position: absolute; bottom: 26px; left: 24px; padding: 12px 18px; background: white; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.atelier-statement { background: #282828; color: #fff; padding: clamp(80px, 10vw, 160px) 24px; text-align: center; }
+.atelier-statement h2 { margin: 28px 0; font-weight: 400; font-size: clamp(42px, 7vw, 100px); line-height: 1.03; letter-spacing: -.03em; text-transform: uppercase; }
+.atelier-statement > p:not(.atelier-eyebrow) { font-size: 16px; margin-bottom: 28px; }
+.atelier-lookbook { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; }
+.atelier-lookbook a { position: relative; text-decoration: none; color: #111; }
+.atelier-lookbook img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.atelier-lookbook span { position: absolute; left: 16px; bottom: 16px; background: white; padding: 8px 12px; font-size: 12px; }
+.atelier-personalisation { display: grid; grid-template-columns: 1fr 1fr; align-items: center; }
+.atelier-personalisation > img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.atelier-personalisation > div { padding: clamp(28px, 6vw, 96px); }
+.atelier-personalisation h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(42px, 5vw, 76px); line-height: 1.1; margin: 18px 0; }
+.atelier-personalisation p:not(.atelier-eyebrow) { max-width: 38ch; margin: 0 0 28px; }
+body[data-concept='atelier'][data-page='home'] .compare-fab { left: 16px; right: auto; }
+
+@media (max-width: 760px) {
+  body[data-concept='atelier'] .atelier-campaign { height: calc(100svh - 36px); min-height: 580px; }
+  body[data-concept='atelier'][data-page='home'] .site-head { height: 68px; }
+  .atelier-campaign-photo { left: 0; top: 68px; }
+  .atelier-campaign-photo img { object-fit: cover; object-position: 50% 0; }
+  .atelier-campaign-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgb(0 0 0 / 48%)); pointer-events: none; }
+  .atelier-campaign-copy { top: auto; bottom: 175px; left: 20px; width: calc(100% - 40px); color: #fff; }
+  .atelier-campaign-copy h1, .atelier-campaign-copy h2 { font-size: 56px; max-width: 5.8em; }
+  .atelier-campaign-copy h1, .atelier-campaign-copy h2 { color: #fff; }
+  .atelier-campaign-copy .atelier-eyebrow { color: #fff; }
+  .atelier-campaign-cta { bottom: 98px; }
+  .atelier-campaign-controls { right: 12px; bottom: 18px; }
+  .atelier-arrivals { grid-auto-columns: 58vw; gap: 2px; padding: 16px 0 24px; }
+  .atelier-arrivals-intro { padding: 24px; }
+  .atelier-category-grid { grid-template-columns: 1fr; }
+  .atelier-category-name { top: 20px; left: 20px; }
+  .atelier-category-cta { bottom: 20px; left: 20px; }
+  .atelier-lookbook { grid-auto-flow: column; grid-auto-columns: 80vw; grid-template-columns: none; overflow-x: auto; scroll-snap-type: x proximity; }
+  .atelier-lookbook a { scroll-snap-align: start; }
+  .atelier-personalisation { grid-template-columns: 1fr; }
+  body[data-concept='atelier'][data-page='home'] .compare-fab { width: 44px; height: 44px; padding: 0; left: 12px; bottom: 20px; }
+  body[data-concept='atelier'][data-page='home'] .compare-fab > span:last-child { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atelier-category img { transition: none; }
+}
+
+/* Compact image-led cards, with a genuine product-page option link. */
+body[data-concept='atelier'] .atelier-card-options {
+  position: absolute; left: 0; right: 0; bottom: 0; min-height: 66px; padding: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+  background: rgb(255 255 255 / 94%); color: #1c1c1c; font-size: 12px;
+  text-transform: uppercase; letter-spacing: .08em; opacity: 0; transform: translateY(8px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+body[data-concept='atelier'] .prod-card:hover .atelier-card-options,
+body[data-concept='atelier'] .prod-card:focus-within .atelier-card-options { opacity: 1; transform: none; }
+body[data-concept='atelier'] .atelier-card-sizes { font-size: 12px; text-transform: none; letter-spacing: .02em; }
+body[data-concept='atelier'] .coll-grid { gap: 4px; }
+
+/* Mimosa-inspired product proportions: scrollable portrait gallery + facts rail. */
+body[data-concept='atelier'] .pd-page--atelier { max-width: 1800px; padding: 26px 48px 80px; }
+body[data-concept='atelier'] .pd-page--atelier .pd-cols { grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); gap: clamp(36px, 6vw, 96px); }
+body[data-concept='atelier'] .pd-page--atelier .pd-media-frame {
+  display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+  aspect-ratio: 4 / 5; scrollbar-width: thin; background: #f5f5f5;
+}
+body[data-concept='atelier'] .pd-page--atelier .pd-media-frame img,
+body[data-concept='atelier'] .pd-page--atelier .pd-media-frame img.is-hidden {
+  display: block !important; position: static; flex: 0 0 100%; width: 100%; height: 100%;
+  object-fit: contain; scroll-snap-align: start;
+}
+body[data-concept='atelier'] .pd-page--atelier .pd-thumbs {
+  position: static; display: flex; flex-direction: row; gap: 8px; padding: 12px 0;
+  overflow-x: auto; max-width: 100%;
+}
+body[data-concept='atelier'] .pd-page--atelier .pd-thumb { width: 60px; height: 75px; flex: 0 0 60px; }
+body[data-concept='atelier'] .pd-page--atelier .pd-info { padding: 18px 0 0; }
+body[data-concept='atelier'] .pd-page--atelier .pd-name {
+  font-family: var(--font-body); font-size: clamp(28px, 2.8vw, 40px); font-style: normal;
+  font-weight: 400; text-transform: uppercase; letter-spacing: .025em; line-height: 1.2;
+}
+body[data-concept='atelier'] .pd-page--atelier .pd-price { font-size: 20px; font-weight: 400; }
+body[data-concept='atelier'] .pd-page--atelier .pd-cat { font-size: 12px; text-transform: uppercase; letter-spacing: .09em; }
+body[data-concept='atelier'] .pd-page--atelier .size-pill { border-radius: 20px; min-width: 70px; padding-inline: 16px; }
+body[data-concept='atelier'] .pd-page--atelier .pd-actions > .btn {
+  background: transparent; color: #1c1c1c; border: 1px solid #1c1c1c;
+  text-transform: uppercase; font-size: 14px; letter-spacing: .08em;
+}
+body[data-concept='atelier'] .pd-page--atelier .pd-actions > .btn:hover { background: #1c1c1c; color: white; }
+body[data-concept='atelier'] .pd-page--atelier .pd-desc { font-size: 16px; line-height: 1.7; }
+
+@media (max-width: 900px) {
+  body[data-concept='atelier'] .pd-page--atelier { padding: 20px 20px 60px; }
+  body[data-concept='atelier'] .pd-page--atelier .pd-cols { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  body[data-concept='atelier'] .pd-page--atelier .pd-media,
+  body[data-concept='atelier'] .pd-page--atelier .pd-info { position: static; top: auto; min-width: 0; }
+  body[data-concept='atelier'] .pd-page--atelier .pd-name { font-size: 28px; }
+}
+@media (hover: none) {
+  body[data-concept='atelier'] .atelier-card-options { opacity: 1; transform: none; }
+}

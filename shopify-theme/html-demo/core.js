@@ -282,6 +282,7 @@ export function utilButtons(compact = false) {
 function burgerButton() {
   const b = el('button', { class: 'icon-btn burger', type: 'button', 'aria-label': 'Open menu', 'aria-haspopup': 'dialog', onclick: (e) => { syncMobileMenu(); openDialog('mobile-menu', e.currentTarget); } });
   b.innerHTML = ICON.burger;
+  b.append(el('span', { class: 'header-menu-label visually-hidden', text: 'Menu' }));
   return b;
 }
 
@@ -292,6 +293,9 @@ function brandLink(fill, alt, homeUrlOverride) {
 }
 
 export function buildHeader({ activeSlug } = {}) {
+  if (state.concept === 'atelier' && !document.getElementById('atelier-design-styles')) {
+    document.head.append(el('link', { id: 'atelier-design-styles', rel: 'stylesheet', href: 'atelier.css' }));
+  }
   const logoFill = state.palette === 'brown' ? state.data.logos.brown : state.data.logos.black;
   const head = el('header', { class: 'site-head', id: 'site-head' });
 
@@ -596,6 +600,12 @@ export function cardMedia(p) {
     && !(p.variants ?? []).some((v) => v.available);
   if (p.categories?.includes('Sale')) media.append(el('span', { class: 'sale-tag', text: 'Sale' }));
   if (everySizeOut || p.stockStatus === 'outofstock') media.append(el('span', { class: 'sold-out-tag', text: 'Sold out' }));
+  if (state.concept === 'atelier') {
+    const sizes = (p.sizes ?? []).filter((size) => size.available).map((size) => size.label.split('/').pop());
+    media.append(el('span', { class: 'atelier-card-options', 'aria-hidden': 'true' },
+      el('span', { text: everySizeOut || p.stockStatus === 'outofstock' ? 'View product' : 'Choose options' }),
+      sizes.length ? el('span', { class: 'atelier-card-sizes', text: sizes.join('  ·  ') }) : null));
+  }
   return media;
 }
 

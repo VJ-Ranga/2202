@@ -13,6 +13,7 @@ import {
 
 import { renderCampaignHero, activateCampaignAutoplay } from './campaign.mjs';
 import { createAutoplay } from './autoplay.mjs';
+import { buildAtelierHome } from './atelier-home.mjs';
 
 import {
   el,
@@ -43,7 +44,7 @@ import {
 
 /* ---------------- constants ---------------- */
 
-const CONCEPTS = { atelier: 'Atelier · Editorial', studio: 'Studio · Modern', maison: 'Maison · Statement' };
+const CONCEPTS = { atelier: 'Atelier · Colombo Edit', studio: 'Studio · Modern', maison: 'Maison · Statement' };
 const PALETTES = { mono: 'Pure Mono', brown: 'Mono + Brown' };
 const NEW_ARRIVAL_IDS = [31845, 31800, 31787, 31836];
 
@@ -357,6 +358,7 @@ async function boot() {
   }
   document.body.dataset.concept = concept;
   document.body.dataset.palette = palette;
+  document.body.dataset.page = 'home';
   document.title = `2202 Love Colombo — ${CONCEPTS[concept]} · ${PALETTES[palette]}`;
 
   buildMobileMenuDialog();
@@ -373,17 +375,20 @@ async function boot() {
     : null;
 
   const main = el('main', { id: 'main' });
-  main.append(...[
+  const atelier = concept === 'atelier' ? buildAtelierHome(state.data) : null;
+  main.append(...(atelier ? atelier.sections : [
     concept === 'studio' ? renderCampaignHero(state.campaignBanners.slides) : renderHero(),
     standfirst,
     renderCategories(),
     renderNewArrivals(),
     renderEditorial(),
     renderPersonalisation(),
-  ].filter((n) => n != null));
+  ].filter((n) => n != null)));
   app.append(main, buildFooter(), compareFab());
 
-  if (concept !== 'studio') {
+  if (atelier) {
+    atelier.activate();
+  } else if (concept !== 'studio') {
     slideToState(0);
     initHeroAutoplay();
   } else {
@@ -393,7 +398,7 @@ async function boot() {
   bindScroll();
 
   let raf = 0;
-  if (concept !== 'studio') window.addEventListener('resize', () => {
+  if (concept === 'maison') window.addEventListener('resize', () => {
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(() => slideToState(heroIdx));
   });
