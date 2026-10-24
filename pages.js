@@ -452,7 +452,10 @@ async function renderProduct() {
     img.style.objectPosition = m.position || '50% 50%';
     return img;
   });
-  const frame = el('div', { class: 'pd-media-frame', dataset: { activeIndex: '0' } }, ...mainImgs);
+  const frame = el('div', {
+    class: 'pd-media-frame', dataset: { activeIndex: '0' },
+    ...(state.concept === 'atelier' ? { tabindex: '0', role: 'region', 'aria-label': 'Product gallery — swipe or use image thumbnails' } : {}),
+  }, ...mainImgs);
   const thumbBox = el('div', { class: 'pd-thumbs', 'aria-label': 'Product views' });
   const tbBtns = [];
   sources.forEach((m, i) => {
@@ -461,6 +464,9 @@ async function renderProduct() {
       'aria-label': `View image ${i + 1} of ${sources.length}`,
       onclick: () => {
         frame.dataset.activeIndex = String(i);
+        if (state.concept === 'atelier') {
+          frame.scrollTo({ left: frame.clientWidth * i, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        }
         mainImgs.forEach((im, k) => im.classList.toggle('is-hidden', k !== i));
         tbBtns.forEach((b, k) => b.classList.toggle('is-on', k === i));
       },
@@ -470,6 +476,23 @@ async function renderProduct() {
     thumbBox.append(tb);
   });
   const mediaCol = el('div', { class: 'pd-media' }, frame, thumbBox);
+  if (state.concept === 'atelier') {
+    frame.addEventListener('scroll', () => {
+      const active = Math.max(0, Math.min(sources.length - 1, Math.round(frame.scrollLeft / frame.clientWidth)));
+      frame.dataset.activeIndex = String(active);
+      tbBtns.forEach((button, i) => {
+        button.classList.toggle('is-on', i === active);
+        button.setAttribute('aria-pressed', String(i === active));
+      });
+    }, { passive: true });
+    frame.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      event.preventDefault();
+      const current = Number(frame.dataset.activeIndex);
+      const next = Math.max(0, Math.min(sources.length - 1, current + (event.key === 'ArrowRight' ? 1 : -1)));
+      tbBtns[next]?.click();
+    });
+  }
 
   /* info column */
   let currentVariant = null;
