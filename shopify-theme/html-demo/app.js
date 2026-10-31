@@ -13,6 +13,7 @@ import {
 
 import { renderCampaignHero, activateCampaignAutoplay } from './campaign.mjs';
 import { createAutoplay } from './autoplay.mjs';
+import { buildSignatureHero } from './signature.mjs';
 import { buildAtelierHome } from './atelier-home.mjs';
 
 import {
@@ -44,7 +45,7 @@ import {
 
 /* ---------------- constants ---------------- */
 
-const CONCEPTS = { atelier: 'Atelier · Colombo Edit', studio: 'Studio · Modern', maison: 'Maison · Statement' };
+const CONCEPTS = { atelier: 'Demo 1', studio: 'Demo 2', maison: 'Demo 3', signature: 'Demo 4', edge: 'Demo 5' };
 const PALETTES = { mono: 'Pure Mono', brown: 'Mono + Brown' };
 const NEW_ARRIVAL_IDS = [31845, 31800, 31787, 31836];
 
@@ -239,7 +240,7 @@ function renderNewArrivals() {
   const head = el('div', { class: 'section-head' });
   const left = el('div');
   left.append(
-    el('span', { class: 'eyebrow' }, state.concept === 'studio' ? 'The art of unwinding.' : 'Just in'),
+    el('span', { class: 'eyebrow' }, ['studio', 'signature', 'edge'].includes(state.concept) ? 'The art of unwinding.' : 'Just in'),
     el('h2', { class: 'section-title', id: 'arrivals-title' }, document.createTextNode('New arrivals')),
   );
   head.append(left, el('a', {
@@ -313,6 +314,23 @@ function renderPersonalisation() {
   const body = el('div', { class: 'perso-body' });
   body.append(el('span', { class: 'eyebrow' }, 'Personalisation'));
   body.append(el('h2', { id: 'perso-title' }, document.createTextNode(d.title)));
+  if (['signature', 'edge'].includes(state.concept)) {
+    body.append(
+      el('p', { text: 'Make a pyjama set your own with an embroidered name or short message. Available on selected personalised pyjama sets — a thoughtful gift or a little detail just for you.' }),
+      el('h3', { class: 'perso-how-title', text: 'How it works' }),
+      el('ol', { class: 'perso-how' },
+        el('li', {}, el('strong', { text: 'Choose your set and size' }),
+          el('p', { text: 'Browse our personalised pyjamas, choose your size, then select Add Personalisation on the product page.' })),
+        el('li', {}, el('strong', { text: 'Make it yours' }),
+          el('p', { text: 'Choose Pocket Hem, Pocket, or both. Add up to 10 characters for each placement, then select your script font and thread colour.' })),
+        el('li', {}, el('strong', { text: 'Review and add to your bag' }),
+          el('p', { text: 'Check the spelling, placement, font and colour. You can edit your choices before adding the set to your bag.' })),
+      ),
+      el('a', { class: 'text-link', text: 'Shop personalised pyjamas', href: collectionUrl('personalised-pyjama') }),
+    );
+    sect.append(media, body);
+    return sect;
+  }
   body.append(el('p', { text: d.description }));
 
   const input = el('input', {
@@ -347,7 +365,7 @@ function renderPersonalisation() {
 async function boot() {
   try {
     state.data = await loadData();
-    if (concept === 'studio') {
+    if (concept === 'studio' || ['signature', 'edge'].includes(concept)) {
       const response = await fetch('assets/campaign-banners.json', { cache: 'no-cache' });
       if (!response.ok) throw new Error(`campaign-banners.json returned HTTP ${response.status}`);
       state.campaignBanners = await response.json();
@@ -377,7 +395,8 @@ async function boot() {
   const main = el('main', { id: 'main' });
   const atelier = concept === 'atelier' ? buildAtelierHome(state.data) : null;
   main.append(...(atelier ? atelier.sections : [
-    concept === 'studio' ? renderCampaignHero(state.campaignBanners.slides) : renderHero(),
+    ['signature', 'edge'].includes(concept) ? buildSignatureHero(state.campaignBanners.slides, state.data)
+      : concept === 'studio' ? renderCampaignHero(state.campaignBanners.slides) : renderHero(),
     standfirst,
     renderCategories(),
     renderNewArrivals(),
@@ -388,7 +407,7 @@ async function boot() {
 
   if (atelier) {
     atelier.activate();
-  } else if (concept !== 'studio') {
+  } else if (concept !== 'studio' && !['signature', 'edge'].includes(concept)) {
     slideToState(0);
     initHeroAutoplay();
   } else {

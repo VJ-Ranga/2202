@@ -1,0 +1,218 @@
+/* Fourth direction only. The original three previews keep their own styles. */
+body:is([data-concept='signature'], [data-concept='edge']) .site-head {
+  height: 88px;
+  background: var(--paper);
+}
+/* Use Demo 3’s full desktop category menu and compact menu icon. */
+body:is([data-concept='signature'], [data-concept='edge'])[data-page='home'] .site-chrome { height: 36px; }
+body:is([data-concept='signature'], [data-concept='edge'])[data-page='home'] .site-head {
+  position: absolute; top: 36px; left: 0; right: 0;
+  color: #171717; background: var(--signature-background, #e4d2b5);
+  backdrop-filter: none; box-shadow: none;
+  transition: color .45s ease, background-color .3s ease;
+}
+body:is([data-concept='signature'], [data-concept='edge'])[data-page='home'] .site-head.is-stuck {
+  position: fixed; top: 0; color: var(--ink); background: var(--paper);
+  box-shadow: 0 1px 0 var(--line);
+}
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero {
+  position: relative; height: calc(100svh - 36px); min-height: 0;
+  background: var(--signature-background); color: var(--signature-foreground);
+  transition: background-color .45s ease, color .45s ease;
+}
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-track {
+  position: absolute; inset: 0;
+}
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-slide,
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-slide-link,
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero picture { height: 100%; }
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero img {
+  height: 100%; width: 100%; object-fit: cover;
+}
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-controls {
+  position: absolute; left: 36px; right: 36px; bottom: 12px;
+  justify-content: flex-end; gap: 6px; background: transparent;
+  border: 0; color: inherit;
+}
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-arrow,
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-counter,
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-autoplay-toggle { color: inherit; }
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-counter { font-size: 12px; letter-spacing: .12em; }
+body:is([data-concept='signature'], [data-concept='edge'])[data-page='home'] .compare-fab { left: 16px; right: auto; }
+@media (max-width: 760px) {
+  body:is([data-concept='signature'], [data-concept='edge']) .site-head { height: 72px; }
+  body:is([data-concept='signature'], [data-concept='edge']) .head-start .burger { width: 44px; flex-basis: 44px; }
+  body:is([data-concept='signature'], [data-concept='edge']) .header-menu-label { display: none; }
+  body:is([data-concept='signature'], [data-concept='edge']) .signature-hero { min-height: 0; }
+  body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-track { inset: 0; }
+  body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-controls { left: 16px; right: 12px; bottom: 10px; }
+  body:is([data-concept='signature'], [data-concept='edge'])[data-page='home'] .compare-fab { width: 44px; height: 44px; padding: 0; left: 12px; bottom: 20px; }
+  body:is([data-concept='signature'], [data-concept='edge'])[data-page='home'] .compare-fab > span:last-child { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body:is([data-concept='signature'], [data-concept='edge']) .site-head,
+  body:is([data-concept='signature'], [data-concept='edge']) .signature-hero { transition: none; }
+}
+
+/* Full-bleed banners and Atelier product stories share the same full-screen stage. */
+body:is([data-concept='signature'], [data-concept='edge']) .signature-editorial { position: absolute; inset: 0; }
+body:is([data-concept='signature'], [data-concept='edge']) .signature-product-photo { position: absolute; inset: 78px 0 0 38%; }
+body:is([data-concept='signature'], [data-concept='edge']) .signature-product-photo img { object-fit: contain; object-position: 50% 0; }
+body:is([data-concept='signature'], [data-concept='edge']) .signature-copy { position: absolute; left: 6%; top: 40%; width: 40%; }
+body:is([data-concept='signature'], [data-concept='edge']) .signature-eyebrow { font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
+body:is([data-concept='signature'], [data-concept='edge']) .signature-copy h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(56px, 7.8vw, 124px); line-height: .98; letter-spacing: -.04em; margin: 16px 0 0; color: #171717; }
+body:is([data-concept='signature'], [data-concept='edge']) .signature-shop { position: absolute; left: 50%; bottom: 80px; transform: translateX(-50%); display: inline-flex; align-items: center; justify-content: center; min-height: 48px; min-width: 154px; padding: 12px 28px; background: white; color: #111; text-decoration: none; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+body:is([data-concept='signature'], [data-concept='edge']) .signature-hero .campaign-controls { background: rgb(255 255 255 / 85%); border-radius: 2px; left: auto; padding: 0 4px; }
+@media (max-width: 760px) {
+  body:is([data-concept='signature'], [data-concept='edge']) .signature-product-photo { inset: 72px 0 0; }
+  body:is([data-concept='signature'], [data-concept='edge']) .signature-product-photo img { object-fit: cover; object-position: 50% 0; }
+  body:is([data-concept='signature'], [data-concept='edge']) .signature-copy { top: auto; bottom: 172px; left: 20px; width: calc(100% - 40px); padding: 12px 16px; background: rgb(255 255 255 / 88%); }
+  body:is([data-concept='signature'], [data-concept='edge']) .signature-copy h2 { font-size: clamp(40px, 11vw, 56px); max-width: 7em; }
+  body:is([data-concept='signature'], [data-concept='edge']) .signature-shop { bottom: 98px; }
+}
+
+/* Keep the original campaign artwork anchored at its top-left edge. */
+body:is([data-concept='signature'], [data-concept='edge']) .signature-banner img { object-position: left top; }
+
+/* Demo 4 collections: retain the four-image layout from Demo 2. */
+body:is([data-concept='signature'], [data-concept='edge']) #categories .section-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: clamp(24px, 3vw, 40px);
+}
+body:is([data-concept='signature'], [data-concept='edge']) #categories .cat-name { font-weight: 700; }
+
+/* Demo 2's complete lower-page presentation, beneath Demo 4's own hero. */
+body:is([data-concept='signature'], [data-concept='edge']) main > .section .section-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: clamp(24px, 3vw, 40px);
+}
+body:is([data-concept='signature'], [data-concept='edge']) .hero-standfirst {
+  display: block;
+  margin-bottom: clamp(20px, 3vh, 36px);
+}
+body:is([data-concept='signature'], [data-concept='edge']) .perso-body h2 {
+  font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+}
+
+/* Demo instalment messaging; no checkout or provider scripts are connected. */
+body:is([data-concept='signature'], [data-concept='edge']) .instalment-preview {
+  display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 5px 7px;
+  margin-top: 8px; padding-top: 0;
+  color: var(--ink-2); font-size: 12px; line-height: 1.45;
+  text-transform: none; letter-spacing: 0;
+}
+body:is([data-concept='signature'], [data-concept='edge']) .instalment-preview__amount strong { font-weight: 600; white-space: nowrap; }
+body:is([data-concept='signature'], [data-concept='edge']) .instalment-preview__providers { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; min-height: 24px; }
+body:is([data-concept='signature'], [data-concept='edge']) .instalment-preview__providers img { position: static; flex: none; object-fit: contain; max-width: none; }
+body:is([data-concept='signature'], [data-concept='edge']) .instalment-preview__mintpay { width: 60px; height: 21px; }
+body:is([data-concept='signature'], [data-concept='edge']) .instalment-preview__koko { width: 46px; height: 21px; }
+body:is([data-concept='signature'], [data-concept='edge']) .instalment-preview--detail { padding: 0 0 8px; margin-top: -8px; gap: 6px 8px; font-size: 14px; }
+body:is([data-concept='signature'], [data-concept='edge']) .instalment-preview--detail .instalment-preview__providers { gap: 10px; }
+body:is([data-concept='signature'], [data-concept='edge']) .instalment-preview__note { flex-basis: 100%; margin: 0; font-size: 11px; line-height: 1.5; color: var(--grey); }
+
+/* Demo 4 product page: image-led gallery and the established retail type. */
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) {
+  max-width: 1800px; margin-inline: auto; padding: 26px 48px 80px;
+}
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-cols {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  gap: clamp(36px, 6vw, 96px);
+}
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-media-frame {
+  display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; scroll-snap-type: y mandatory;
+  max-height: calc(100svh - 160px);
+  aspect-ratio: 4 / 5; scrollbar-width: thin; background: #f5f5f5;
+}
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-media-frame img,
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-media-frame img.is-hidden {
+  display: block !important; position: static; flex: 0 0 100%; width: 100%; height: 100%;
+  object-fit: contain; scroll-snap-align: start; scroll-snap-stop: always; opacity: 1; pointer-events: auto;
+}
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-thumbs {
+  position: static; display: flex; flex-direction: row; gap: 8px; padding: 12px 0; overflow-x: auto; max-width: 100%;
+}
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-thumb { width: 60px; height: 75px; flex: 0 0 60px; }
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-info { padding: 18px 0 0; }
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-media,
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-info { top: 108px; }
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-name {
+  font-family: var(--font-body); font-size: clamp(28px, 2.8vw, 40px);
+  font-weight: 500; text-transform: uppercase; letter-spacing: .025em; line-height: 1.2;
+}
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-price { font-size: 22px; font-weight: 400; }
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-cat { font-size: 12px; text-transform: uppercase; letter-spacing: .09em; }
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .size-pill { border-radius: 20px; min-width: 70px; padding-inline: 16px; }
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-actions > .btn {
+  background: transparent; color: #1c1c1c; border: 1px solid #1c1c1c;
+  text-transform: uppercase; font-size: 14px; letter-spacing: .08em;
+}
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-actions > .btn:hover { background: #1c1c1c; color: white; }
+body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-desc { font-size: 16px; line-height: 1.7; }
+@media (max-width: 900px) {
+  body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) { padding: 20px 20px 60px; }
+  body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-cols { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-media,
+  body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-info { position: static; top: auto; min-width: 0; }
+  body:is([data-concept='signature'], [data-concept='edge']) :is(.pd-page--signature, .pd-page--edge) .pd-name { font-size: 28px; }
+}
+
+/* Payment branding follows the shopper through the demo. */
+body:is([data-concept='signature'], [data-concept='edge']) .payment-methods-strip { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 18px; padding: 24px var(--gutter); border-top: 1px solid var(--line); font-size: 12px; }
+body:is([data-concept='signature'], [data-concept='edge']) .payment-methods-strip img { object-fit: contain; height: 21px; }
+body:is([data-concept='signature'], [data-concept='edge']) .cart-drawer-summary .instalment-preview { margin: 4px 0 12px; font-size: 13px; }
+body:is([data-concept='signature'], [data-concept='edge']) .cart-foot .instalment-preview { margin-bottom: 18px; }
+body:is([data-concept='signature'], [data-concept='edge']) .cart-checkout { display: flex; align-items: center; justify-content: center; text-decoration: none; }
+body:is([data-concept='signature'], [data-concept='edge']) .spo-card .instalment-preview { font-size: 11px; margin-top: 6px; }
+body:is([data-concept='signature'], [data-concept='edge']) .demo-checkout { max-width: 1440px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-preview-notice { padding: 12px 16px; background: #f5f4f1; font-size: 13px; margin-bottom: 32px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-layout { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: clamp(28px,5vw,72px); }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-layout > * { min-width: 0; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-main { display: flex; flex-direction: column; gap: 24px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-main h2,
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-summary h2 { font-size: 22px; font-weight: 500; margin-bottom: 16px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-main h3 { font-size: 18px; font-weight: 500; margin-bottom: 12px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-small { font-size: 12px; line-height: 1.6; color: var(--grey); margin-top: 8px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-payment-methods { border: 0; padding: 0; margin: 0; min-width: 0; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-payment-methods legend { font-size: 22px; margin-bottom: 16px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-method { display: flex; align-items: center; gap: 14px; padding: 18px 16px; border: 1px solid var(--line); margin-bottom: 10px; cursor: pointer; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-method.is-selected { border-color: #111; background: #faf9f7; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-method input { appearance: auto; width: 18px; height: 18px; flex: 0 0 18px; accent-color: #111; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-method-copy { display: flex; flex-direction: column; gap: 4px; flex: 1; font-size: 13px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-method img { object-fit: contain; flex: none; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-schedule { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-schedule li { display: flex; flex-direction: column; gap: 8px; padding: 14px 12px; background: #f5f4f1; font-size: 12px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-schedule strong { font-size: 15px; font-weight: 500; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-summary { align-self: start; padding: 28px; background: #f7f7f5; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-item { display: grid; grid-template-columns: 64px minmax(0,1fr) auto; gap: 14px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-item img { width: 64px; height: 80px; object-fit: cover; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-item p { font-size: 12px; color: var(--grey); margin-top: 6px; overflow-wrap: anywhere; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-total-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; font-size: 14px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-grand-total { border-top: 1px solid var(--line); padding-top: 18px; font-size: 20px; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-payment-flow:empty { display: none; }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-payment-flow,
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-demo-result { padding: 22px; border: 1px solid var(--line); }
+body:is([data-concept='signature'], [data-concept='edge']) .checkout-payment-flow .btn { margin-top: 18px; }
+@media (max-width: 900px) {
+  body:is([data-concept='signature'], [data-concept='edge']) .checkout-layout { grid-template-columns: minmax(0,1fr); }
+  body:is([data-concept='signature'], [data-concept='edge']) .checkout-summary { padding: 20px; }
+}
+@media (max-width: 400px) {
+  body:is([data-concept='signature'], [data-concept='edge']) .checkout-schedule { grid-template-columns: minmax(0,1fr); }
+  body:is([data-concept='signature'], [data-concept='edge']) .checkout-schedule li { flex-direction: row; align-items: center; justify-content: space-between; }
+  body:is([data-concept='signature'], [data-concept='edge']) .checkout-item { grid-template-columns: 48px minmax(0,1fr); gap: 10px; }
+  body:is([data-concept='signature'], [data-concept='edge']) .checkout-item img { width: 48px; height: 60px; grid-row: span 2; }
+  body:is([data-concept='signature'], [data-concept='edge']) .checkout-item > strong { grid-column: 2; }
+}
+body:is([data-concept='signature'], [data-concept='edge']) .demo-checkout [hidden] { display: none !important; }
+
+/* Homepage personalisation explainer; existing image and section sizing retained. */
+body:is([data-concept='signature'], [data-concept='edge']) .perso-how-title { font-size: 16px; font-weight: 600; margin: 4px 0 0; }
+body:is([data-concept='signature'], [data-concept='edge']) .perso-how { list-style: decimal; padding-left: 20px; display: flex; flex-direction: column; gap: 16px; }
+body:is([data-concept='signature'], [data-concept='edge']) .perso-how li { padding-left: 6px; font-size: 15px; }
+body:is([data-concept='signature'], [data-concept='edge']) .perso-how li::marker { font-weight: 500; }
+body:is([data-concept='signature'], [data-concept='edge']) .perso-how strong { font-weight: 600; }
+body:is([data-concept='signature'], [data-concept='edge']) .perso-how p { margin-top: 4px; line-height: 1.6; }

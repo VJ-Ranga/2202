@@ -1,0 +1,36 @@
+/* Demo 5: Demo 4 functionality, with edge-to-edge photography and less whitespace. */
+body[data-concept='edge'] { --section-gap: clamp(28px, 4vw, 52px); }
+body[data-concept='edge'] .site-head { padding-inline: 20px; }
+body[data-concept='edge'][data-page='home'] main > .section { margin-top: var(--section-gap); }
+body[data-concept='edge'][data-page='home'] .section-head { padding-inline: 24px; margin-bottom: 18px; }
+body[data-concept='edge'][data-page='home'] .cat-grid,
+body[data-concept='edge'][data-page='home'] .prod-grid { padding-inline: 0; gap: 4px; }
+body[data-concept='edge'][data-page='home'] .card-info { padding: 12px 16px 0; }
+body[data-concept='edge'][data-page='home'] .cat-name { padding: 12px 16px 0; }
+body[data-concept='edge'][data-page='home'] .hero-standfirst { padding-inline: 24px; margin: 22px 0 0; }
+body[data-concept='edge'][data-page='home'] .editorial { padding-inline: 0; gap: 4px; }
+body[data-concept='edge'][data-page='home'] #personalisation {
+  padding-inline: 0; gap: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+body[data-concept='edge'][data-page='home'] #personalisation .perso-body {
+  padding: clamp(24px, 4vw, 64px); max-width: 64ch;
+}
+body[data-concept='edge'] .page-body { max-width: none; padding-inline: 20px; }
+body[data-page='product'][data-concept='edge'] .pd-page { padding-inline: 20px; }
+body[data-page='product'][data-concept='edge'] .pd-cols { gap: clamp(24px, 3vw, 48px); }
+body[data-page='product'][data-concept='edge'] .pd-related { gap: 4px; }
+body[data-concept='edge'] .foot-panel { padding-inline: 24px; }
+@media (max-width: 900px) {
+  body[data-concept='edge'][data-page='home'] #personalisation { grid-template-columns: minmax(0, 1fr); }
+  body[data-concept='edge'][data-page='home'] #personalisation .perso-body { max-width: none; }
+}
+@media (max-width: 760px) {
+  body[data-concept='edge'] .site-head { padding-inline: 10px; }
+  body[data-concept='edge'][data-page='home'] .section-head { padding-inline: 16px; }
+  body[data-concept='edge'][data-page='home'] .card-info,
+  body[data-concept='edge'][data-page='home'] .cat-name { padding-inline: 10px; }
+  body[data-concept='edge'] .page-body,
+  body[data-page='product'][data-concept='edge'] .pd-page { padding-inline: 12px; }
+  body[data-concept='edge'][data-page='home'] #personalisation .perso-body { padding: 28px 20px; }
+  body[data-concept='edge'] .foot-panel { padding-inline: 20px; }
+}

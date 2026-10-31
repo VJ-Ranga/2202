@@ -8,6 +8,11 @@ from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1] / "html-demo"
 
+class DemoServer(ThreadingHTTPServer):
+    # Browsers open parallel image/font/module connections. The default queue
+    # of five can overflow in bursts and cause local TCP retry delays.
+    request_queue_size = 128
+
 class DemoHandler(SimpleHTTPRequestHandler):
     server_version = "2202Demo/1.0"
 
@@ -30,7 +35,7 @@ def main():
     parser.add_argument("--bind", default="0.0.0.0")
     args = parser.parse_args()
     handler = partial(DemoHandler, directory=str(ROOT))
-    server = ThreadingHTTPServer((args.bind, args.port), handler)
+    server = DemoServer((args.bind, args.port), handler)
     print(f"Serving {ROOT} at http://{args.bind}:{args.port}", flush=True)
     try:
         server.serve_forever()

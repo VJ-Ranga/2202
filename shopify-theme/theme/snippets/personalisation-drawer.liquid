@@ -1,0 +1,30 @@
+{%- comment -%} Product personalisation drawer. The product price already includes embroidery. {%- endcomment -%}
+{{ 'personalisation.css' | asset_url | stylesheet_tag }}
+<personalisation-drawer
+  class="personalisation"
+  data-form-id="{{ product_form_id }}"
+  data-product-id="{{ product.id }}"
+>
+  <button type="button" class="personalisation__trigger" aria-haspopup="dialog" aria-expanded="false">
+    {{ block.settings.button_label | escape }}
+  </button>
+  <p class="personalisation__status" role="alert" hidden></p>
+  <script type="application/json" class="personalisation__config">
+    {
+      "maxLength": 10,
+      "required": {{ block.settings.require_personalisation | json }},
+      "messages": {
+        "variation": "Please choose the product options (e.g. size) before personalising.",
+        "close": "You'll lose your personalisation choices. Are you sure?",
+        "required": "Required",
+        "cartError": "We couldn't add your personalisation. Please try again."
+      },
+      "placements": [
+        {"id":"pocket-hem","label":"Pocket Hem","image":{{ 'personalisation-pocket-hem.webp' | asset_url | json }},"fonts":[{"id":"freestyle","label":"Freestyle Script","image":{{ 'personalisation-font-freestyle-script.webp' | asset_url | json }}},{"id":"edwardian","label":"Edwardian Script ITC","image":{{ 'personalisation-font-edwardian-script-itc.webp' | asset_url | json }}}],"colours":[{"id":"off-white","label":"off white","value":"#e7e5d6"},{"id":"black","label":"Black","value":"#000000"},{"id":"white","label":"White","value":"#ffffff"}]},
+        {"id":"pocket","label":"Pocket","image":{{ 'personalisation-pocket.webp' | asset_url | json }},"fonts":[{"id":"freestyle","label":"Freestyle Script","image":{{ 'personalisation-font-freestyle-script.webp' | asset_url | json }}},{"id":"edwardian","label":"Edwardian Script ITC","image":{{ 'personalisation-font-edwardian-script-itc.webp' | asset_url | json }}}],"colours":[{"id":"off-white","label":"off white","value":"#e7e5d6"},{"id":"black","label":"Black","value":"#000000"},{"id":"white","label":"White","value":"#ffffff"}]}
+      ]
+    }
+  </script>
+</personalisation-drawer>
+<script src="{{ 'personalisation-logic.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'personalisation.js' | asset_url }}" defer="defer"></script>

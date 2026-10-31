@@ -29,7 +29,7 @@ import { createSearchOverlay } from './search-overlay.mjs';
 /* ---------------- location / url ---------------- */
 
 export const QS = new URLSearchParams(window.location.search);
-export const concept = ['atelier', 'studio', 'maison'].includes(QS.get('concept')) ? QS.get('concept') : 'atelier';
+export const concept = ['atelier', 'studio', 'maison', 'signature', 'edge'].includes(QS.get('concept')) ? QS.get('concept') : 'atelier';
 export const palette = ['mono', 'brown'].includes(QS.get('palette')) ? QS.get('palette') : 'mono';
 
 /**
@@ -296,6 +296,12 @@ export function buildHeader({ activeSlug } = {}) {
   if (state.concept === 'atelier' && !document.getElementById('atelier-design-styles')) {
     document.head.append(el('link', { id: 'atelier-design-styles', rel: 'stylesheet', href: 'atelier.css' }));
   }
+  if (['signature', 'edge'].includes(state.concept) && !document.getElementById('signature-design-styles')) {
+    document.head.append(el('link', { id: 'signature-design-styles', rel: 'stylesheet', href: 'signature.css' }));
+  }
+  if (state.concept === 'edge' && !document.getElementById('edge-design-styles')) {
+    document.head.append(el('link', { id: 'edge-design-styles', rel: 'stylesheet', href: 'edge.css' }));
+  }
   const logoFill = state.palette === 'brown' ? state.data.logos.brown : state.data.logos.black;
   const head = el('header', { class: 'site-head', id: 'site-head' });
 
@@ -369,6 +375,12 @@ export function buildFooter({ onExplore } = {}) {
   foot.append(el('div', { class: 'foot-legal' },
     el('p', {}, document.createTextNode('© 2026 – 2202lovecolombo.com · Powered by Nihal Apparel')),
     el('p', { class: 'foot-note' }, document.createTextNode('HTML preview — commerce inactive')),
+  ));
+  if (['signature', 'edge'].includes(state.concept)) foot.append(el('div', { class: 'payment-methods-strip' },
+    el('span', { text: 'Payment options' }),
+    el('img', { src: 'assets/payments/mintpay.png', alt: 'Mintpay', width: '60', height: '21', loading: 'lazy' }),
+    el('img', { src: 'assets/payments/koko.png', alt: 'Koko', width: '46', height: '21', loading: 'lazy' }),
+    el('span', { text: 'Cash on delivery' }),
   ));
   return foot;
 }
@@ -445,17 +457,17 @@ export function ensureCartDrawer() {
     getCart: () => state.cart,
     getProducts: () => state.data?.products ?? [],
     setCart: commitDrawerCart,
+    renderPaymentSummary: (total) => buildInstalmentPreview(total),
     urls: {
       cart: pageUrl('cart.html'),
       shop: collectionUrl('all'),
-      /* Checkout hands off to the existing full cart document in preview mode:
-         cart.html?checkout=preview shows the established unavailable notice. */
-      checkout: pageUrl('cart.html', { checkout: 'preview' }),
+      checkout: ['signature', 'edge'].includes(state.concept) ? pageUrl('checkout.html') : pageUrl('cart.html', { checkout: 'preview' }),
       product: (id) => productUrl(Number(id)),
     },
     onChange: () => {
       /* Ships on the established wishlist rerender pattern: a full cart
          document rebuild, not stale inline copies. */
+      if (typeof window.__rerenderCheckout === 'function') window.__rerenderCheckout();
       if (onCartDocument() && typeof window.__rerenderCart === 'function') {
         window.__rerenderCart();
       }
@@ -471,6 +483,7 @@ export function ensureSearchOverlay() {
   searchOverlayPromise ??= createSearchOverlay({
     getProducts: () => state.data?.products ?? [],
     getNavigation: () => state.data?.navigation ?? [],
+    renderPaymentSummary: (price) => buildInstalmentPreview(price),
     urls: {
       search: (q) => searchUrl(q),
       product: (id) => productUrl(Number(id)),
@@ -609,6 +622,22 @@ export function cardMedia(p) {
   return media;
 }
 
+/** Demos 4/5: display estimate, not payment processing or eligibility. */
+export function buildInstalmentPreview(price, { detail = false } = {}) {
+  if (!['signature', 'edge'].includes(state.concept) || !Number.isFinite(price) || price <= 0) return null;
+  const block = el('div', { class: `instalment-preview${detail ? ' instalment-preview--detail' : ''}`, 'aria-label': 'Mintpay and Koko instalment preview' },
+    el('span', { class: 'instalment-preview__amount' }, 'or 3 × ', el('strong', { text: formatPrice(price / 3) })),
+    el('span', { class: 'instalment-preview__providers' },
+      el('span', { text: 'with' }),
+      el('img', { class: 'instalment-preview__mintpay', src: 'assets/payments/mintpay.png', alt: 'Mintpay', width: '60', height: '21', loading: 'lazy' }),
+      el('span', { text: 'or' }),
+      el('img', { class: 'instalment-preview__koko', src: 'assets/payments/koko.png', alt: 'Koko', width: '46', height: '21', loading: 'lazy' })),
+  );
+  if (detail) block.append(el('p', { class: 'instalment-preview__note', text: 'Demo estimate · provider terms apply.' }));
+  block.title = 'Illustrative three-payment split per item. Final amounts and eligibility are set by the provider; payments are unavailable in this demo.';
+  return block;
+}
+
 export function cardInfo(p) {
   const cats = (p.categories ?? []).filter((c) => !['Sets', 'Sale'].includes(c));
   return el('div', { class: 'card-info' },
@@ -618,6 +647,7 @@ export function cardInfo(p) {
       p.regularPrice != null ? el('s', { text: formatPrice(p.regularPrice) }) : null,
       document.createTextNode(formatPrice(p.price)),
     ),
+    buildInstalmentPreview(p.price),
   );
 }
 
@@ -732,7 +762,7 @@ export function cartTotals() {
 
 /* ---------------- compare switcher (allowed modal, home only) ---------------- */
 
-const CONCEPTS = { atelier: 'Atelier · Editorial', studio: 'Studio · Modern', maison: 'Maison · Statement' };
+const CONCEPTS = { atelier: 'Demo 1', studio: 'Demo 2', maison: 'Demo 3', signature: 'Demo 4', edge: 'Demo 5' };
 const PALETTES = { mono: 'Pure Mono', brown: 'Mono + Brown' };
 export function compareUrl(c, p) {
   const u = new URL('preview.html', window.location.href);
@@ -768,9 +798,9 @@ export function openCompare(invoker) {
   dlg.replaceChildren(
     dlgCloseBtn('compare'),
     el('h2', { id: 'cmp-title' }, document.createTextNode('Compare homepage previews')),
-    el('p', { class: 'cmp-sub' }, document.createTextNode('Three approved concepts × two palettes. Same content models in all six.')),
+    el('p', { class: 'cmp-sub' }, document.createTextNode('Five demos × two palettes. Compare Demo 1 through Demo 5.')),
     list,
-    el('a', { class: 'cmp-index-link', href: 'index.html' }, document.createTextNode('Open comparison index — all six side by side')),
+    el('a', { class: 'cmp-index-link', href: 'index.html' }, document.createTextNode('Open comparison index — all five demos')),
   );
   openDialog('compare', invoker);
 }
@@ -800,6 +830,7 @@ window.addEventListener('storage', (event) => {
       state.cart = normalizeCart([]);
     }
     syncBadges();
+    if (typeof window.__rerenderCheckout === 'function') window.__rerenderCheckout();
     if (onCartDocument() && typeof window.__rerenderCart === 'function') {
       window.__rerenderCart();
     }

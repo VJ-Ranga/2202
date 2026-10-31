@@ -246,6 +246,7 @@ export async function createCartDrawer({
   setCart,
   urls,
   onChange = () => {},
+  renderPaymentSummary,
 } = {}) {
   if (typeof getCart !== 'function') throw new TypeError('createCartDrawer: getCart function required');
   if (typeof getProducts !== 'function') throw new TypeError('createCartDrawer: getProducts function required');
@@ -540,6 +541,9 @@ export async function createCartDrawer({
         text: 'Shipping calculated at checkout.',
       }),
     );
+
+    const paymentSummary = renderPaymentSummary?.(total);
+    if (paymentSummary) summary.append(paymentSummary);
 
     if (target) {
       summary.append(el('a', {

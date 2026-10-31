@@ -54,3 +54,6 @@ h2 { margin-bottom: 0; font-family: Bodoni, Georgia, serif; font-size: clamp(29p
 .presentation-announcement { min-height: 36px; display: grid; place-items: center; padding: 8px 16px; background: #000; color: #fff; font: 14px/20px Barlow, Arial, sans-serif; text-align: center; }
 .presentation-announcement a { color: inherit; text-decoration: none; }
 .presentation-announcement a:hover, .presentation-announcement a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Four directions stay balanced at tablet widths. */
+@media (min-width: 621px) and (max-width: 900px) { .concept-card:last-child { grid-column: auto; max-width: none; } }

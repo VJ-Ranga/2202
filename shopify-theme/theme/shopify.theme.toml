@@ -1,0 +1,6 @@
+# Separate 2202 test store. No live theme ID is configured.
+[environments.default]
+store = "2202-5lmpawaa.myshopify.com"
+
+[environments.development]
+store = "2202-5lmpawaa.myshopify.com"

@@ -10,7 +10,7 @@
  * ever assigned through textContent; no innerHTML anywhere.
  *
  * Frozen API:
- *   const overlay = await createSearchOverlay({ getProducts, getNavigation, urls });
+ *   const overlay = await createSearchOverlay({ getProducts, getNavigation, urls, renderPaymentSummary });
  *   overlay.open(invoker, initialQuery = '');  // showModal, autofocus input
  *   overlay.close();                           // immediate, idempotent
  *   overlay.isOpen;                            // boolean getter
@@ -214,7 +214,7 @@ const ICON_SEARCH = ['M21 21l-4.35-4.35', 'M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 
 
 let activeOverlay = null; /* one modal at a time, even across instances */
 
-export async function createSearchOverlay({ getProducts, getNavigation, urls } = {}) {
+export async function createSearchOverlay({ getProducts, getNavigation, urls, renderPaymentSummary } = {}) {
   if (typeof getProducts !== 'function') {
     throw new TypeError('createSearchOverlay: getProducts function required');
   }
@@ -268,6 +268,7 @@ export async function createSearchOverlay({ getProducts, getNavigation, urls } =
     el('span', { class: 'spo-card-name', text: String(p.name) }),
     material ? el('span', { class: 'spo-card-mat', text: material }) : null, /* name -> fabric -> price */
     priceWrap,
+    renderPaymentSummary?.(p.price),
     );
   }
 

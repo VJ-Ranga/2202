@@ -1,0 +1,84 @@
+/* Four familiar product-gallery compositions; shared product data and controls. */
+body[data-page='product'][data-concept] .pd-page {
+  width: 100%; max-width: none; padding-inline: clamp(20px, 2.2vw, 48px);
+}
+body[data-page='product'][data-concept] .pd-cols > * { min-width: 0; }
+body[data-page='product'][data-concept] .pd-related {
+  width: 100%; max-width: none; padding-inline: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px;
+}
+body[data-page='product'][data-concept] .pd-related-label {
+  margin-top: 64px; margin-bottom: 24px; font-size: clamp(22px, 2vw, 30px);
+  font-weight: 500; letter-spacing: .025em;
+}
+body[data-page='product'][data-concept] .pd-media .pd-thumb {
+  padding: 0; background: #f5f5f5; cursor: pointer;
+}
+body[data-page='product'][data-concept] .pd-media .pd-thumb.is-on { border-color: #111; box-shadow: inset 0 0 0 1px #111; }
+
+@media (min-width: 901px) {
+  /* Demo 1: slim thumbnail rail on the left, editorial portrait alongside. */
+  body[data-page='product'][data-concept='atelier'] .pd-media {
+    display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 14px; align-items: start;
+  }
+  body[data-page='product'][data-concept='atelier'] .pd-media .pd-media-frame { grid-column: 2; grid-row: 1; }
+  body[data-page='product'][data-concept='atelier'] .pd-media .pd-thumbs {
+    position: static; grid-column: 1; grid-row: 1; display: flex; flex-direction: column;
+    gap: 10px; padding: 0; margin: 0; width: 60px; max-width: none;
+  }
+  body[data-page='product'][data-concept='atelier'] .pd-media .pd-thumb { width: 60px; height: 75px; flex: 0 0 75px; }
+
+  /* Demo 2: a browseable two-column image grid, with thumbnails underneath. */
+  body[data-page='product'][data-concept='studio'] .pd-media { position: static; }
+  body[data-page='product'][data-concept='studio'] .pd-media .pd-media-frame {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; aspect-ratio: auto;
+  }
+  body[data-page='product'][data-concept='studio'] .pd-media .pd-media-frame img,
+  body[data-page='product'][data-concept='studio'] .pd-media .pd-media-frame img.is-hidden {
+    position: static; display: block; opacity: 1; pointer-events: auto; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: contain;
+  }
+  body[data-page='product'][data-concept='studio'] .pd-media .pd-thumbs {
+    position: static; display: flex; flex-direction: row; max-width: 100%; gap: 10px; padding: 12px 0;
+  }
+  body[data-page='product'][data-concept='studio'] .pd-media .pd-thumb { width: 60px; height: 75px; flex: 0 0 60px; }
+
+  /* Demo 3: framed main photograph with a thumbnail rail on the right. */
+  body[data-page='product'][data-concept='maison'] .pd-media {
+    display: grid; grid-template-columns: minmax(0, 1fr) 72px; gap: 18px; align-items: start;
+  }
+  body[data-page='product'][data-concept='maison'] .pd-media .pd-media-frame {
+    grid-column: 1; grid-row: 1; border: 1px solid var(--line); padding: 8px; background: white;
+  }
+  body[data-page='product'][data-concept='maison'] .pd-media .pd-thumbs {
+    position: static; grid-column: 2; grid-row: 1; display: flex; flex-direction: column;
+    gap: 12px; margin: 0; padding: 0; width: 72px; max-width: none;
+  }
+  body[data-page='product'][data-concept='maison'] .pd-media .pd-thumb { width: 72px; height: 90px; flex: 0 0 90px; }
+
+  /* Demo 4: larger left-side thumbnails and a clean swipeable main image. */
+  body[data-page='product']:is([data-concept='signature'], [data-concept='edge']) .pd-media {
+    display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 20px; align-items: start;
+  }
+  body[data-page='product']:is([data-concept='signature'], [data-concept='edge']) .pd-media .pd-media-frame { grid-column: 2; grid-row: 1; }
+  body[data-page='product']:is([data-concept='signature'], [data-concept='edge']) .pd-media .pd-thumbs {
+    position: static; grid-column: 1; grid-row: 1; display: flex; flex-direction: column;
+    gap: 12px; padding: 0; margin: 0; width: 80px; max-width: none;
+  }
+  body[data-page='product']:is([data-concept='signature'], [data-concept='edge']) .pd-media .pd-thumb { width: 80px; height: 100px; flex: 0 0 100px; border-radius: 5px; }
+}
+
+@media (max-width: 900px) {
+  body[data-page='product'][data-concept] .pd-cols { grid-template-columns: minmax(0, 1fr); }
+  body[data-page='product'][data-concept] .pd-media,
+  body[data-page='product'][data-concept] .pd-info { position: static; top: auto; }
+  body[data-page='product'][data-concept] .pd-media .pd-thumbs {
+    position: static; display: flex; flex-direction: row; gap: 8px;
+    width: 100%; max-width: 100%; overflow-x: auto; padding: 12px 0; margin: 0;
+  }
+  body[data-page='product'][data-concept] .pd-media .pd-thumb { width: 56px; height: 70px; flex: 0 0 56px; }
+  body[data-page='product'][data-concept='studio'] .pd-media .pd-media-frame { display: block; position: relative; aspect-ratio: 4 / 5; }
+  body[data-page='product'][data-concept='studio'] .pd-media .pd-media-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  body[data-page='product'][data-concept='studio'] .pd-media .pd-media-frame img.is-hidden { display: none; }
+  body[data-page='product'][data-concept] .pd-related { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
+  body[data-page='product'][data-concept] .pd-info { border-left: 0; padding-left: 0; padding-right: 0; }
+}

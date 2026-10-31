@@ -24,6 +24,7 @@ const BASE_TITLES = {
   collection: 'Collection · 2202 Love Colombo',
   product: 'Product · 2202 Love Colombo',
   cart: 'Cart · 2202 Love Colombo',
+  checkout: 'Checkout preview · 2202 Love Colombo',
   wishlist: 'Wishlist · 2202 Love Colombo',
   search: 'Search · 2202 Love Colombo',
   page: 'Information · 2202 Love Colombo',

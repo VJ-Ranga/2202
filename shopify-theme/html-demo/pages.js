@@ -24,6 +24,7 @@ import {
   MAX_QUANTITY,
 } from './store.mjs';
 
+import { renderCheckout } from './checkout.mjs';
 import { buildCustomisation } from './customisation.mjs';
 
 import {
@@ -39,6 +40,7 @@ import {
   accountUrl,
   trackingUrl,
   buildProductCard,
+  buildInstalmentPreview,
   buildWishButton,
   cartAdjust,
   persistCart,
@@ -431,11 +433,11 @@ async function renderProduct() {
   out.append(trail);
   const layoutSwitch = el('nav', { class: 'pd-layout-switcher', 'aria-label': 'Explore product layouts' },
     el('span', { class: 'pd-layout-label', text: 'Explore product layouts' }),
-    ...['atelier', 'studio', 'maison'].map((layout) => el('a', {
+    ...['atelier', 'studio', 'maison', 'signature', 'edge'].map((layout, index) => el('a', {
       class: `pd-layout-link${layout === state.concept ? ' is-current' : ''}`,
       href: `product.html?id=${encodeURIComponent(p.id)}&concept=${layout}&palette=${state.palette}`,
       ...(layout === state.concept ? { 'aria-current': 'page' } : {}),
-      text: layout[0].toUpperCase() + layout.slice(1),
+      text: `Demo ${index + 1}`,
     })),
   );
   out.append(layoutSwitch);
@@ -454,7 +456,7 @@ async function renderProduct() {
   });
   const frame = el('div', {
     class: 'pd-media-frame', dataset: { activeIndex: '0' },
-    ...(state.concept === 'atelier' ? { tabindex: '0', role: 'region', 'aria-label': 'Product gallery — swipe or use image thumbnails' } : {}),
+    ...(['atelier', 'signature', 'edge'].includes(state.concept) ? { tabindex: '0', role: 'region', 'aria-label': ['signature', 'edge'].includes(state.concept) ? 'Product gallery — scroll up or down, use arrow keys or image thumbnails' : 'Product gallery — swipe or use image thumbnails' } : {}),
   }, ...mainImgs);
   const thumbBox = el('div', { class: 'pd-thumbs', 'aria-label': 'Product views' });
   const tbBtns = [];
@@ -462,13 +464,20 @@ async function renderProduct() {
     const tb = el('button', {
       class: `pd-thumb${i === 0 ? ' is-on' : ''}`, type: 'button',
       'aria-label': `View image ${i + 1} of ${sources.length}`,
+      'aria-pressed': String(i === 0),
       onclick: () => {
         frame.dataset.activeIndex = String(i);
-        if (state.concept === 'atelier') {
-          frame.scrollTo({ left: frame.clientWidth * i, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        if (['atelier', 'signature', 'edge'].includes(state.concept)) {
+          frame.scrollTo({
+            ...(['signature', 'edge'].includes(state.concept) ? { top: frame.clientHeight * i } : { left: frame.clientWidth * i }),
+            behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          });
         }
         mainImgs.forEach((im, k) => im.classList.toggle('is-hidden', k !== i));
-        tbBtns.forEach((b, k) => b.classList.toggle('is-on', k === i));
+        tbBtns.forEach((b, k) => { b.classList.toggle('is-on', k === i); b.setAttribute('aria-pressed', String(k === i)); });
+        if (state.concept === 'studio' && window.matchMedia('(min-width: 901px)').matches) {
+          mainImgs[i].scrollIntoView({ block: 'nearest', behavior: 'auto' });
+        }
       },
     });
     tb.append(el('img', { src: m.src, alt: '', width: '96', height: '120', loading: 'lazy' }));
@@ -476,9 +485,9 @@ async function renderProduct() {
     thumbBox.append(tb);
   });
   const mediaCol = el('div', { class: 'pd-media' }, frame, thumbBox);
-  if (state.concept === 'atelier') {
+  if (['atelier', 'signature', 'edge'].includes(state.concept)) {
     frame.addEventListener('scroll', () => {
-      const active = Math.max(0, Math.min(sources.length - 1, Math.round(frame.scrollLeft / frame.clientWidth)));
+      const active = Math.max(0, Math.min(sources.length - 1, Math.round(['signature', 'edge'].includes(state.concept) ? frame.scrollTop / frame.clientHeight : frame.scrollLeft / frame.clientWidth)));
       frame.dataset.activeIndex = String(active);
       tbBtns.forEach((button, i) => {
         button.classList.toggle('is-on', i === active);
@@ -486,10 +495,11 @@ async function renderProduct() {
       });
     }, { passive: true });
     frame.addEventListener('keydown', (event) => {
-      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      const keys = ['signature', 'edge'].includes(state.concept) ? ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'] : ['ArrowLeft', 'ArrowRight'];
+      if (!keys.includes(event.key)) return;
       event.preventDefault();
       const current = Number(frame.dataset.activeIndex);
-      const next = Math.max(0, Math.min(sources.length - 1, current + (event.key === 'ArrowRight' ? 1 : -1)));
+      const next = Math.max(0, Math.min(sources.length - 1, current + (['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1)));
       tbBtns[next]?.click();
     });
   }
@@ -497,6 +507,7 @@ async function renderProduct() {
   /* info column */
   let currentVariant = null;
   const priceWrap = el('p', { class: 'pd-price' });
+  const instalmentWrap = ['signature', 'edge'].includes(state.concept) ? el('div', { class: 'pd-instalments' }) : null;
   const showPrice = () => {
     priceWrap.replaceChildren();
     const v = currentVariant;
@@ -504,6 +515,7 @@ async function renderProduct() {
     const reg = v && Number.isFinite(v.regularPrice) && v.regularPrice > cur ? v.regularPrice : p.regularPrice;
     if (reg != null && reg > cur) priceWrap.append(el('s', { text: formatPrice(reg) }));
     priceWrap.append(document.createTextNode(formatPrice(cur)));
+    if (instalmentWrap) instalmentWrap.replaceChildren(...[buildInstalmentPreview(cur, { detail: true })].filter(Boolean));
   };
   showPrice();
 
@@ -526,7 +538,7 @@ async function renderProduct() {
         toast(`Added to bag — ${p.name} · personalised`);
       },
       viewCartUrl: pageUrl('cart.html'),
-      checkoutUrl: pageUrl('cart.html', { checkout: 'preview' }),
+      checkoutUrl: ['signature', 'edge'].includes(state.concept) ? pageUrl('checkout.html') : pageUrl('cart.html', { checkout: 'preview' }),
     });
   } catch (error) {
     /* Optional feature failure must not block ordinary product purchase. */
@@ -544,8 +556,9 @@ async function renderProduct() {
   info.append(
     el('p', { class: 'pd-cat', text: (p.categories ?? []).slice(0, 4).join(' · ') }),
     el('h1', { class: 'pd-name', tabindex: '-1' }, document.createTextNode(p.name)),
-    p.sku ? el('p', { class: 'pd-sku', text: `SKU ${p.sku}` }) : null,
+    ...(p.sku ? [el('p', { class: 'pd-sku', text: `SKU ${p.sku}` })] : []),
     priceWrap,
+    ...(instalmentWrap ? [instalmentWrap] : []),
     p.stockStatus === 'outofstock'
       ? el('p', { class: 'pd-stock out', text: 'Sold out' })
       : el('p', { class: 'pd-stock in', text: 'In stock' }),
@@ -699,10 +712,10 @@ function renderCart() {
   state.cart.forEach((line, i) => {
     const p = findProduct(state.data, line.id);
     const row = el('div', { class: 'cart-line' });
-    row.append(p ? el('img', {
+    if (p) row.append(el('img', {
       class: 'cart-line-img', src: p.image.src, alt: p.name, width: '96', height: '120', loading: 'lazy',
-    }) : null);
-    row.append(
+    }));
+    row.append(...[
       el('div', { class: 'cart-line-info' },
         p ? el('a', { class: 'cart-line-name', href: productUrl(line.id) }, document.createTextNode(line.name)) : el('p', { class: 'cart-line-name' }, document.createTextNode(line.name)),
         line.size ? el('p', { class: 'cart-line-size', text: `Size ${line.size}` }) : null,
@@ -745,7 +758,7 @@ function renderCart() {
         }),
       ),
       el('p', { class: 'cart-line-price', text: formatPrice((line.price + (line.fee ?? 0)) * line.qty) }),
-    );
+    ].filter((node) => node != null));
     if (p) lines.append(row);
   });
   const foot = el('div', { class: 'cart-foot' },
@@ -754,22 +767,31 @@ function renderCart() {
       el('strong', { text: formatPrice(subtotal(state.cart)) }),
     ),
   );
-  const checkout = el('button', {
-    class: 'btn cart-checkout', type: 'button', text: 'Checkout',
-    'aria-label': 'Checkout — unavailable in this static preview',
-  });
-  checkout.addEventListener('click', () => {
-    checkout.disabled = true;
-    checkout.textContent = 'Preview: order placement unavailable';
-    toast('Preview: checkout is disabled; the live theme uses Shopify checkout.');
-  });
-  foot.append(checkout,
-    el('p', {
-      class: 'cart-note',
-      text: 'This is a website preview. Your bag is saved on this device. Checkout and payment are unavailable.',
-    }),
-    el('a', { class: 'text-link', href: collectionUrl('all') }, document.createTextNode('Keep shopping')),
-  );
+  if (['signature', 'edge'].includes(state.concept)) {
+    foot.append(
+      buildInstalmentPreview(subtotal(state.cart), { detail: true }),
+      el('a', { class: 'btn cart-checkout', href: pageUrl('checkout.html'), text: 'Continue to checkout' }),
+      el('p', { class: 'cart-note', text: 'Preview checkout lets you try payment selection. No payment is taken or order placed.' }),
+      el('a', { class: 'text-link', href: collectionUrl('all'), text: 'Keep shopping' }),
+    );
+  } else {
+    const checkout = el('button', {
+      class: 'btn cart-checkout', type: 'button', text: 'Checkout',
+      'aria-label': 'Checkout — unavailable in this static preview',
+    });
+    checkout.addEventListener('click', () => {
+      checkout.disabled = true;
+      checkout.textContent = 'Preview: order placement unavailable';
+      toast('Preview: checkout is disabled; the live theme uses Shopify checkout.');
+    });
+    foot.append(checkout,
+      el('p', {
+        class: 'cart-note',
+        text: 'This is a website preview. Your bag is saved on this device. Checkout and payment are unavailable.',
+      }),
+      el('a', { class: 'text-link', href: collectionUrl('all') }, document.createTextNode('Keep shopping')),
+    );
+  }
   out.append(lines, foot);
   $app().replaceChildren(out);
 }
@@ -1063,6 +1085,7 @@ export const RENDERERS = {
   collection: renderCollection,
   product: renderProduct,
   cart: renderCart,
+  checkout: renderCheckout,
   wishlist: renderWishlist,
   search: renderSearch,
   page: renderInfo,

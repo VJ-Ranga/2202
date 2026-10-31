@@ -8,7 +8,7 @@ function srcset(variants) {
   return Object.values(variants).map((item) => `${item.src} ${item.width}w`).join(', ');
 }
 
-function campaignImage(slide, eager) {
+export function campaignImage(slide, eager) {
   const desktop = slide.desktop.variants;
   const fallback = desktop['960'];
   const img = el('img', {
@@ -34,15 +34,16 @@ function campaignImage(slide, eager) {
   return picture;
 }
 
-export function renderCampaignHero(slides) {
+export function renderCampaignHero(slides, { label = 'Studio campaign collections', onSlideChange, renderSlide } = {}) {
   let current = 0;
   const hero = el('section', {
     class: 'campaign-hero', id: 'campaign-hero', tabindex: '0',
-    role: 'region', 'aria-roledescription': 'carousel', 'aria-label': 'Studio campaign collections',
+    role: 'region', 'aria-roledescription': 'carousel', 'aria-label': label,
   });
   const track = el('div', { class: 'campaign-track' });
   const slideNodes = slides.map((slide, index) => {
-    const link = el('a', {
+    const content = renderSlide?.(slide, index);
+    const link = content ?? el('a', {
       class: 'campaign-slide-link',
       href: collectionUrl(slide.collection),
       'aria-label': `${slide.title} — shop collection`,
@@ -66,6 +67,7 @@ export function renderCampaignHero(slides) {
       node.setAttribute('aria-hidden', String(!active));
       if ('inert' in node) node.inert = !active;
     });
+    onSlideChange?.(slides[current], current);
     counter.textContent = `${current + 1} / ${slides.length}`;
     live.textContent = `Slide ${current + 1} of ${slides.length}: ${slides[current].title}`;
   };
